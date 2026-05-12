@@ -97,6 +97,22 @@ function Index() {
             <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md drop-shadow-2xl" />
           </div>
 
+          {/* Bloco persuasivo abaixo do projetor */}
+          <div className="mt-10 mx-auto max-w-3xl">
+            <p className="text-2xl md:text-3xl font-black uppercase leading-tight">
+              Não é só pra Copa. <span className="text-primary">Dura o ano inteiro.</span>
+            </p>
+            <p className="mt-4 text-lg md:text-xl text-foreground/90 leading-relaxed">
+              Imagine assistir <span className="text-primary font-semibold">UFC, Brasileirão, Libertadores e Champions League</span> em tela gigante, do seu sofá, com seus amigos gritando cada gol e cada nocaute como se fosse no estádio.
+            </p>
+            <p className="mt-4 text-lg md:text-xl text-foreground/90 leading-relaxed">
+              Imagine transformar sua sala em um <span className="text-primary font-semibold">cinema particular</span> — filmes, séries e maratonas com a família, sem pagar ingresso, sem sair de casa, todo dia.
+            </p>
+            <p className="mt-6 text-base md:text-lg text-muted-foreground italic">
+              Enquanto você pensa, outras pessoas já estão garantindo o delas. <span className="text-primary not-italic font-semibold">Não fique de fora.</span>
+            </p>
+          </div>
+
           <div className="mt-8 flex flex-col items-center gap-2">
             <p className="text-3xl md:text-4xl font-bold">12x disponível</p>
             <p className="text-xl text-muted-foreground">ou <span className="text-primary font-semibold">R$297</span> à vista</p>
