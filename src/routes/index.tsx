@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import heroImg from "@/assets/projetor.png";
 import baldeImg from "@/assets/balde.png";
 import somImg from "@/assets/caixa-som.png";
 import bandeiraImg from "@/assets/bandeira.png";
-import { Button } from "@/components/ui/button";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -24,9 +25,57 @@ const UPSELL_URL = "https://pay.kaiross.com.br/toYaqm1esck6";
 const SOM_URL = "https://pay.kaiross.com.br/LvyNrKXNY2RX";
 const BANDEIRA_URL = "https://pay.kaiross.com.br/CiDSlddhxPPM";
 
+const PRICES: Record<ProductId, number> = {
+  projetor: 297,
+  balde: 100,
+  "caixa-som": 265,
+  bandeira: 30,
+};
+
+const URLS: Record<ProductId, string> = {
+  projetor: CHECKOUT_URL,
+  balde: UPSELL_URL,
+  "caixa-som": SOM_URL,
+  bandeira: BANDEIRA_URL,
+};
+
+function ctaProps(product: ProductId, source: string) {
+  return {
+    href: buildCheckoutUrl(URLS[product], { product, price: PRICES[product], source }),
+    target: "_blank" as const,
+    rel: "noopener",
+    onClick: () => trackClick({ product, price: PRICES[product], source }),
+    "data-product": product,
+    "data-source": source,
+  };
+}
+
 function Index() {
+  const [showSticky, setShowSticky] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowSticky(window.scrollY > 600);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* STICKY TOP CTA — aparece ao rolar */}
+      <div className={`fixed top-0 inset-x-0 z-50 transition-transform duration-300 ${showSticky ? "translate-y-0" : "-translate-y-full"}`}>
+        <div className="backdrop-blur-md bg-background/85 border-b border-border">
+          <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-black text-primary uppercase tracking-wide text-sm md:text-base">ArenaBox Pro</span>
+              <span className="hidden sm:inline text-xs text-muted-foreground truncate">12x ou R$297 à vista</span>
+            </div>
+            <a {...ctaProps("projetor", "sticky-top")} className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02] shrink-0" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+              <ShoppingCart className="h-4 w-4" /> Quero meu ArenaBox
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* HERO */}
       <section className="relative isolate overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
         <div className="absolute inset-0 -z-10 opacity-40" aria-hidden>
@@ -54,7 +103,7 @@ function Index() {
             <p className="text-sm text-muted-foreground">frete calculado no checkout (aprox. R$316,90 total)</p>
           </div>
 
-          <a href={CHECKOUT_URL} target="_blank" rel="noopener" className="mt-8 inline-flex items-center justify-center w-full max-w-md rounded-xl px-8 py-5 text-lg font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+          <a {...ctaProps("projetor", "hero")} className="mt-8 inline-flex items-center justify-center w-full max-w-md rounded-xl px-8 py-5 text-lg font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
             Quero meu ArenaBox Pro
           </a>
 
@@ -120,15 +169,15 @@ function Index() {
         <div className="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
           <div className="relative">
             <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.3 }} aria-hidden />
-            <img src={baldeImg} alt="Balde Party Som" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm" />
+            <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm" />
           </div>
           <div>
-            <h2 className="text-3xl md:text-4xl font-black uppercase">Quer a experiência <span className="text-primary">completa da Copa?</span></h2>
-            <p className="mt-4 text-lg text-muted-foreground">Som alto, clima de festa e bebida sempre gelada.</p>
+            <h2 className="text-3xl md:text-4xl font-black uppercase">Balde com <span className="text-primary">caixa de som embutida</span></h2>
+            <p className="mt-4 text-lg text-muted-foreground">Bebida sempre gelada e som alto no mesmo produto — 2 em 1.</p>
             <p className="mt-2 text-muted-foreground">O combo perfeito para transformar qualquer jogo em evento.</p>
             <p className="mt-6 text-4xl font-black">Apenas <span className="text-primary">R$100</span></p>
-            <a href={UPSELL_URL} target="_blank" rel="noopener" className="mt-6 inline-flex items-center justify-center w-full rounded-xl px-6 py-4 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Balde Party
+            <a {...ctaProps("balde", "upsell-balde")} className="mt-6 inline-flex items-center justify-center w-full rounded-xl px-6 py-4 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+              Adicionar Balde Party Som
             </a>
             <p className="mt-3 text-sm text-muted-foreground">🔥 Ideal para Copa, churrasco e festas com amigos</p>
           </div>
@@ -141,10 +190,10 @@ function Index() {
               <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.2 }} aria-hidden />
               <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
             </div>
-            <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Potente</span></h3>
+            <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Boombox</span></h3>
             <p className="mt-2 text-muted-foreground">Som alto e grave forte para sentir cada gol como se estivesse no estádio.</p>
             <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$265</span></p>
-            <a href={SOM_URL} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+            <a {...ctaProps("caixa-som", "upsell-caixa-som")} className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
               Adicionar Caixa de Som
             </a>
           </div>
@@ -156,7 +205,7 @@ function Index() {
             <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
             <p className="mt-2 text-muted-foreground">Decore sua casa e mostre o verdadeiro espírito da torcida brasileira.</p>
             <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$30</span></p>
-            <a href={BANDEIRA_URL} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+            <a {...ctaProps("bandeira", "upsell-bandeira")} className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
               Adicionar Bandeira
             </a>
           </div>
@@ -219,16 +268,29 @@ function Index() {
           <Tv className="h-12 w-12 mx-auto text-primary" />
           <h2 className="mt-6 text-4xl md:text-6xl font-black uppercase">Sua casa pode ser o novo <span className="text-primary">estádio da Copa</span>.</h2>
           <p className="mt-6 text-lg text-muted-foreground">Não perca a chance de viver essa experiência em 2026.</p>
-          <a href={CHECKOUT_URL} target="_blank" rel="noopener" className="mt-10 inline-flex items-center justify-center w-full max-w-xl rounded-xl px-8 py-6 text-lg font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+          <a {...ctaProps("projetor", "final-cta")} className="mt-10 inline-flex items-center justify-center w-full max-w-xl rounded-xl px-8 py-6 text-lg font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
             Quero transformar minha casa agora
           </a>
           <p className="mt-6 text-sm text-muted-foreground">12x disponível • R$297 à vista • Envio para todo o Brasil</p>
         </div>
       </section>
 
-      <footer className="py-8 px-6 text-center text-sm text-muted-foreground border-t border-border">
+      <footer className="py-8 px-6 pb-28 md:pb-24 text-center text-sm text-muted-foreground border-t border-border">
         © {new Date().getFullYear()} ArenaBox Pro. Todos os direitos reservados.
       </footer>
+
+      {/* STICKY BOTTOM CTA — sempre visível */}
+      <div className="fixed bottom-0 inset-x-0 z-50 backdrop-blur-md bg-background/90 border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
+          <div className="hidden sm:flex flex-col leading-tight">
+            <span className="font-bold text-foreground text-sm">ArenaBox Pro</span>
+            <span className="text-xs text-muted-foreground">12x ou R$297 à vista</span>
+          </div>
+          <a {...ctaProps("projetor", "sticky-bottom")} className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm md:text-base font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+            <ShoppingCart className="h-4 w-4" /> Quero meu ArenaBox Pro
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
