@@ -143,6 +143,7 @@ function Index() {
             </div>
             <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Potente</span></h3>
             <p className="mt-2 text-muted-foreground">Som alto e grave forte para sentir cada gol como se estivesse no estádio.</p>
+            <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$265</span></p>
             <a href={SOM_URL} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
               Adicionar Caixa de Som
             </a>
@@ -154,6 +155,7 @@ function Index() {
             </div>
             <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
             <p className="mt-2 text-muted-foreground">Decore sua casa e mostre o verdadeiro espírito da torcida brasileira.</p>
+            <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$30</span></p>
             <a href={BANDEIRA_URL} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
               Adicionar Bandeira
             </a>
