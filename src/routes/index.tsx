@@ -96,27 +96,54 @@ function Index() {
             <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md product-glow" />
           </div>
 
-          {/* Quick product nav — projetor em destaque no centro */}
-          <div className="mt-10 mx-auto max-w-md">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Toque para conhecer</p>
-            <div className="grid grid-cols-3 gap-3 items-end">
-              <a href="#produto-balde" onClick={(e) => { e.preventDefault(); document.getElementById("produto-balde")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-2xl border border-border bg-card p-3 flex flex-col items-center transition-transform hover:scale-105 active:scale-95">
-                <img src={baldeImg} alt="Balde com som" className="h-20 w-auto product-glow" loading="lazy" />
-                <span className="mt-2 text-[10px] font-bold uppercase">Balde Som</span>
+          {/* Quick product nav — projetor em destaque no centro, mais sofisticado */}
+          <div className="mt-12 mx-auto max-w-lg">
+            <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground/80 mb-6 text-center">
+              Toque para conhecer
+            </p>
+
+            {/* Linha superior: balde · projetor (elevado) · boombox */}
+            <div className="grid grid-cols-3 gap-4 items-center">
+              <a
+                href="#produto-balde"
+                onClick={(e) => { e.preventDefault(); document.getElementById("produto-balde")?.scrollIntoView({ behavior: "smooth" }); }}
+                className="group relative aspect-square rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-background/40 p-3 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary/60 hover:-translate-y-1"
+              >
+                <img src={baldeImg} alt="Balde com som" className="h-16 w-auto product-glow transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+                <span className="mt-1 text-[9px] font-bold uppercase tracking-wider text-foreground/80">Balde Som</span>
               </a>
-              <a href="#produto-projetor" onClick={(e) => { e.preventDefault(); document.getElementById("produto-projetor")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-2xl border-2 border-primary bg-card p-3 flex flex-col items-center transition-transform hover:scale-105 active:scale-95 -mb-2" style={{ boxShadow: "var(--shadow-gold)" }}>
-                <span className="text-[9px] font-black uppercase text-primary mb-1">Principal</span>
-                <img src={heroImg} alt="Projetor" className="h-28 w-auto product-glow" loading="lazy" />
-                <span className="mt-2 text-[11px] font-black uppercase text-primary">Projetor</span>
+
+              <a
+                href="#produto-projetor"
+                onClick={(e) => { e.preventDefault(); document.getElementById("produto-projetor")?.scrollIntoView({ behavior: "smooth" }); }}
+                className="group relative -mt-6 aspect-square rounded-2xl border-2 border-primary bg-gradient-to-br from-primary/15 via-card to-card p-3 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1.5"
+                style={{ boxShadow: "var(--shadow-gold)" }}
+              >
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
+                  Principal
+                </span>
+                <img src={heroImg} alt="Projetor" className="h-24 w-auto product-glow transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+                <span className="mt-1 text-[11px] font-black uppercase tracking-wider text-primary">Projetor</span>
               </a>
-              <a href="#produto-som" onClick={(e) => { e.preventDefault(); document.getElementById("produto-som")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-2xl border border-border bg-card p-3 flex flex-col items-center transition-transform hover:scale-105 active:scale-95">
-                <img src={somImg} alt="Caixa de som" className="h-20 w-auto product-glow" loading="lazy" />
-                <span className="mt-2 text-[10px] font-bold uppercase">Boombox</span>
+
+              <a
+                href="#produto-som"
+                onClick={(e) => { e.preventDefault(); document.getElementById("produto-som")?.scrollIntoView({ behavior: "smooth" }); }}
+                className="group relative aspect-square rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-background/40 p-3 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary/60 hover:-translate-y-1"
+              >
+                <img src={somImg} alt="Caixa de som" className="h-16 w-auto product-glow transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+                <span className="mt-1 text-[9px] font-bold uppercase tracking-wider text-foreground/80">Boombox</span>
               </a>
             </div>
-            <a href="#produto-bandeira" onClick={(e) => { e.preventDefault(); document.getElementById("produto-bandeira")?.scrollIntoView({ behavior: "smooth" }); }} className="mt-3 rounded-2xl border border-border bg-card p-3 flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95">
-              <img src={bandeiraImg} alt="Bandeira do Brasil" className="h-14 w-auto product-glow" loading="lazy" />
-              <span className="text-xs font-bold uppercase">Bandeira do Brasil</span>
+
+            {/* Linha inferior reta: bandeira */}
+            <a
+              href="#produto-bandeira"
+              onClick={(e) => { e.preventDefault(); document.getElementById("produto-bandeira")?.scrollIntoView({ behavior: "smooth" }); }}
+              className="group mt-4 w-full rounded-2xl border border-primary/20 bg-gradient-to-r from-card via-card to-background/40 p-3 flex items-center justify-center gap-3 transition-all duration-300 hover:border-primary/60 hover:-translate-y-0.5"
+            >
+              <img src={bandeiraImg} alt="Bandeira do Brasil" className="h-12 w-auto product-glow transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-foreground/90">Bandeira do Brasil</span>
             </a>
           </div>
 
