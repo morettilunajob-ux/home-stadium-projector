@@ -253,6 +253,50 @@ function Index() {
 
       {/* FAQ */}
       <section className="py-24 px-6">
+        <div className="mx-auto max-w-5xl mb-20">
+          <div className="rounded-3xl border-2 border-primary/40 bg-card p-8 md:p-12" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <div className="flex flex-col items-center text-center">
+              <div className="rounded-full p-4" style={{ background: "var(--gradient-gold)" }}>
+                <ShieldCheck className="h-10 w-10 text-primary-foreground" />
+              </div>
+              <h2 className="mt-6 text-3xl md:text-5xl font-black uppercase">
+                Garantia de <span className="text-primary">risco zero</span>
+              </h2>
+              <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
+                Você compra com tranquilidade. Se não amar o ArenaBox Pro, devolvemos <span className="text-primary font-semibold">100% do seu dinheiro</span>. Sem perguntas, sem burocracia.
+              </p>
+            </div>
+
+            <div className="mt-10 grid md:grid-cols-3 gap-5">
+              <div className="rounded-2xl border border-border bg-background p-6 text-center">
+                <BadgeCheck className="h-8 w-8 text-primary mx-auto" />
+                <h3 className="mt-3 font-black uppercase">7 dias para testar</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Direito de arrependimento garantido por lei (Art. 49 CDC). Devolva em até 7 dias após o recebimento.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-6 text-center">
+                <RotateCcw className="h-8 w-8 text-primary mx-auto" />
+                <h3 className="mt-3 font-black uppercase">Troca em 30 dias</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Defeito de fábrica? Trocamos sem custo em até 30 dias. Você não corre nenhum risco.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-6 text-center">
+                <Truck className="h-8 w-8 text-primary mx-auto" />
+                <h3 className="mt-3 font-black uppercase">Reembolso total</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Se mudar de ideia, devolvemos cada centavo na mesma forma de pagamento. Simples assim.
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-8 text-center text-base text-foreground/90">
+              <span className="text-primary font-semibold">O risco é todo nosso.</span> Você só precisa testar e se apaixonar.
+            </p>
+          </div>
+        </div>
+
         <div className="mx-auto max-w-3xl">
           <h2 className="text-4xl md:text-5xl font-black text-center uppercase">Perguntas <span className="text-primary">frequentes</span></h2>
           <Accordion type="single" collapsible className="mt-10">
