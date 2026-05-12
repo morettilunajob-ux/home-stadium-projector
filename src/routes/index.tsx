@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/projetor.png";
-import baldeImg from "@/assets/balde.png";
-import somImg from "@/assets/caixa-som.png";
-import bandeiraImg from "@/assets/bandeira.png";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Wifi, Maximize } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 
@@ -21,22 +18,13 @@ export const Route = createFileRoute("/")({
 });
 
 const CHECKOUT_URL = "https://pay.kaiross.com.br/13qxfBIkBJKO";
-const UPSELL_URL = "https://pay.kaiross.com.br/toYaqm1esck6";
-const SOM_URL = "https://pay.kaiross.com.br/LvyNrKXNY2RX";
-const BANDEIRA_URL = "https://pay.kaiross.com.br/CiDSlddhxPPM";
 
 const PRICES: Record<ProductId, number> = {
   projetor: 297,
-  balde: 100,
-  "caixa-som": 265,
-  bandeira: 30,
 };
 
 const URLS: Record<ProductId, string> = {
   projetor: CHECKOUT_URL,
-  balde: UPSELL_URL,
-  "caixa-som": SOM_URL,
-  bandeira: BANDEIRA_URL,
 };
 
 function ctaProps(product: ProductId, source: string) {
@@ -44,7 +32,17 @@ function ctaProps(product: ProductId, source: string) {
     href: buildCheckoutUrl(URLS[product], { product, price: PRICES[product], source }),
     target: "_blank" as const,
     rel: "noopener",
-    onClick: () => trackClick({ product, price: PRICES[product], source }),
+    onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+      trackClick({ product, price: PRICES[product], source });
+      // Scroll suave até o bloco do projetor antes de abrir o checkout
+      const target = document.getElementById("projetor-specs");
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        const url = e.currentTarget.href;
+        window.setTimeout(() => window.open(url, "_blank", "noopener"), 700);
+      }
+    },
     "data-product": product,
     "data-source": source,
   };
