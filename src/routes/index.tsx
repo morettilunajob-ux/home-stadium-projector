@@ -96,6 +96,30 @@ function Index() {
             <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md product-glow" />
           </div>
 
+          {/* Quick product nav — projetor em destaque no centro */}
+          <div className="mt-10 mx-auto max-w-md">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Toque para conhecer</p>
+            <div className="grid grid-cols-3 gap-3 items-end">
+              <a href="#produto-balde" onClick={(e) => { e.preventDefault(); document.getElementById("produto-balde")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-2xl border border-border bg-card p-3 flex flex-col items-center transition-transform hover:scale-105 active:scale-95">
+                <img src={baldeImg} alt="Balde com som" className="h-20 w-auto product-glow" loading="lazy" />
+                <span className="mt-2 text-[10px] font-bold uppercase">Balde Som</span>
+              </a>
+              <a href="#produto-projetor" onClick={(e) => { e.preventDefault(); document.getElementById("produto-projetor")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-2xl border-2 border-primary bg-card p-3 flex flex-col items-center transition-transform hover:scale-105 active:scale-95 -mb-2" style={{ boxShadow: "var(--shadow-gold)" }}>
+                <span className="text-[9px] font-black uppercase text-primary mb-1">Principal</span>
+                <img src={heroImg} alt="Projetor" className="h-28 w-auto product-glow" loading="lazy" />
+                <span className="mt-2 text-[11px] font-black uppercase text-primary">Projetor</span>
+              </a>
+              <a href="#produto-som" onClick={(e) => { e.preventDefault(); document.getElementById("produto-som")?.scrollIntoView({ behavior: "smooth" }); }} className="rounded-2xl border border-border bg-card p-3 flex flex-col items-center transition-transform hover:scale-105 active:scale-95">
+                <img src={somImg} alt="Caixa de som" className="h-20 w-auto product-glow" loading="lazy" />
+                <span className="mt-2 text-[10px] font-bold uppercase">Boombox</span>
+              </a>
+            </div>
+            <a href="#produto-bandeira" onClick={(e) => { e.preventDefault(); document.getElementById("produto-bandeira")?.scrollIntoView({ behavior: "smooth" }); }} className="mt-3 rounded-2xl border border-border bg-card p-3 flex items-center justify-center gap-3 transition-transform hover:scale-[1.02] active:scale-95">
+              <img src={bandeiraImg} alt="Bandeira do Brasil" className="h-14 w-auto product-glow" loading="lazy" />
+              <span className="text-xs font-bold uppercase">Bandeira do Brasil</span>
+            </a>
+          </div>
+
           {/* Bloco persuasivo abaixo do projetor */}
           <div className="mt-10 mx-auto max-w-3xl">
             <p className="text-2xl md:text-3xl font-black uppercase leading-tight">
@@ -118,7 +142,7 @@ function Index() {
             <p className="text-sm text-muted-foreground">frete calculado no checkout (aprox. R$316,90 total)</p>
           </div>
 
-          <a {...ctaProps("projetor", "hero")} className="mt-8 inline-flex items-center justify-center w-full max-w-md rounded-xl px-8 py-5 text-lg font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+          <a id="produto-projetor" {...ctaProps("projetor", "hero")} className="scroll-mt-24 mt-8 inline-flex items-center justify-center w-full max-w-md rounded-xl px-8 py-5 text-lg font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
             Quero meu ArenaBox Pro
           </a>
 
@@ -181,7 +205,7 @@ function Index() {
 
       {/* UPSELL */}
       <section className="py-24 px-6">
-        <div className="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+        <div id="produto-balde" className="scroll-mt-24 mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
           <div className="relative">
             <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm product-glow" />
           </div>
@@ -199,7 +223,7 @@ function Index() {
 
         {/* Extra upsells: Caixa de Som + Bandeira */}
         <div className="mx-auto max-w-5xl mt-10 grid md:grid-cols-2 gap-6">
-          <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
+          <div id="produto-som" className="scroll-mt-24 rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
             <div className="relative w-full h-56 flex items-center justify-center">
               <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
             </div>
@@ -210,7 +234,7 @@ function Index() {
               Adicionar Caixa de Som
             </a>
           </div>
-          <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
+          <div id="produto-bandeira" className="scroll-mt-24 rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
             <div className="relative w-full h-56 flex items-center justify-center">
               <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
             </div>
