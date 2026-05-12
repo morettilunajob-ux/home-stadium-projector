@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/projetor.png";
-import baldeImg from "@/assets/balde.png";
-import somImg from "@/assets/caixa-som.png";
-import bandeiraImg from "@/assets/bandeira.png";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Wifi, Maximize } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 
@@ -21,22 +18,13 @@ export const Route = createFileRoute("/")({
 });
 
 const CHECKOUT_URL = "https://pay.kaiross.com.br/13qxfBIkBJKO";
-const UPSELL_URL = "https://pay.kaiross.com.br/toYaqm1esck6";
-const SOM_URL = "https://pay.kaiross.com.br/LvyNrKXNY2RX";
-const BANDEIRA_URL = "https://pay.kaiross.com.br/CiDSlddhxPPM";
 
 const PRICES: Record<ProductId, number> = {
   projetor: 297,
-  balde: 100,
-  "caixa-som": 265,
-  bandeira: 30,
 };
 
 const URLS: Record<ProductId, string> = {
   projetor: CHECKOUT_URL,
-  balde: UPSELL_URL,
-  "caixa-som": SOM_URL,
-  bandeira: BANDEIRA_URL,
 };
 
 function ctaProps(product: ProductId, source: string) {
@@ -44,7 +32,17 @@ function ctaProps(product: ProductId, source: string) {
     href: buildCheckoutUrl(URLS[product], { product, price: PRICES[product], source }),
     target: "_blank" as const,
     rel: "noopener",
-    onClick: () => trackClick({ product, price: PRICES[product], source }),
+    onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+      trackClick({ product, price: PRICES[product], source });
+      // Scroll suave até o bloco do projetor antes de abrir o checkout
+      const target = document.getElementById("projetor-specs");
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        const url = e.currentTarget.href;
+        window.setTimeout(() => window.open(url, "_blank", "noopener"), 700);
+      }
+    },
     "data-product": product,
     "data-source": source,
   };
@@ -146,6 +144,55 @@ function Index() {
         </div>
       </section>
 
+      {/* ESPECIFICAÇÕES DO PROJETOR */}
+      <section id="projetor-specs" className="scroll-mt-24 py-24 px-6 bg-card/50">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
+              <Sparkles className="h-3.5 w-3.5" /> ArenaBox Pro
+            </span>
+            <h2 className="mt-6 text-4xl md:text-5xl font-black uppercase">
+              Especificações <span className="text-primary">técnicas</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              Tudo o que você precisa para transformar qualquer parede em um estádio.
+            </p>
+          </div>
+
+          <div className="mt-14 grid lg:grid-cols-2 gap-10 items-center">
+            <div className="relative rounded-3xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card p-8 md:p-12 flex items-center justify-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+              <img src={heroImg} alt="Mini projetor ArenaBox Pro em destaque" width={1024} height={1024} loading="lazy" className="w-full max-w-md product-glow" />
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { icon: Maximize, title: "Tela até 200\"", text: "Projeta uma tela gigante de 60\" a 200\" em qualquer parede branca." },
+                { icon: Sun, title: "Brilho 9500 lúmens", text: "Imagem nítida e vibrante mesmo em ambientes com pouca luz." },
+                { icon: Monitor, title: "Full HD 1080p", text: "Resolução nativa HD com suporte a vídeos 4K via decoder." },
+                { icon: Wifi, title: "Wi-Fi + Bluetooth", text: "Espelhe o celular sem fios. Conecta com iOS e Android." },
+                { icon: Tv, title: "HDMI · USB · AV", text: "Compatível com TV box, videogame, notebook e pendrive." },
+                { icon: Zap, title: "Instalação rápida", text: "Plug and play. Pronto para usar em menos de 1 minuto." },
+              ].map(({ icon: Icon, title, text }, i) => (
+                <div key={i} className="rounded-2xl border border-border bg-background p-5">
+                  <div className="inline-flex rounded-lg p-2" style={{ background: "var(--gradient-gold)" }}>
+                    <Icon className="h-5 w-5 text-primary-foreground" />
+                  </div>
+                  <h3 className="mt-3 font-black uppercase text-base">{title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <a {...ctaProps("projetor", "specs")} className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-5 text-lg font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+              <ShoppingCart className="h-5 w-5" /> Quero meu ArenaBox Pro
+            </a>
+            <p className="mt-3 text-sm text-muted-foreground">12x disponível • R$297 à vista</p>
+          </div>
+        </div>
+      </section>
+
       {/* EXPERIÊNCIA */}
       <section className="py-24 px-6">
         <div className="mx-auto max-w-4xl text-center">
@@ -194,51 +241,6 @@ function Index() {
       <div className="px-6 py-5 text-center font-semibold text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
         ⚠️ Oferta especial ativa por tempo limitado durante a campanha da Copa
       </div>
-
-      {/* UPSELL */}
-      <section className="py-24 px-6">
-        <div id="produto-balde" className="scroll-mt-24 mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
-          <div className="relative">
-            <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm product-glow" />
-          </div>
-          <div>
-            <h2 className="text-3xl md:text-4xl font-black uppercase">Balde com <span className="text-primary">caixa de som embutida</span></h2>
-            <p className="mt-4 text-lg text-muted-foreground">Bebida sempre gelada e som alto no mesmo produto — 2 em 1.</p>
-            <p className="mt-2 text-muted-foreground">O combo perfeito para transformar qualquer jogo em evento.</p>
-            <p className="mt-6 text-4xl font-black">Apenas <span className="text-primary">R$100</span></p>
-            <a {...ctaProps("balde", "upsell-balde")} className="mt-6 inline-flex items-center justify-center w-full rounded-xl px-6 py-4 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Balde Party Som
-            </a>
-            <p className="mt-3 text-sm text-muted-foreground">🔥 Ideal para Copa, churrasco e festas com amigos</p>
-          </div>
-        </div>
-
-        {/* Extra upsells: Caixa de Som + Bandeira */}
-        <div className="mx-auto max-w-5xl mt-10 grid md:grid-cols-2 gap-6">
-          <div id="produto-som" className="scroll-mt-24 rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
-            <div className="relative w-full h-56 flex items-center justify-center">
-              <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
-            </div>
-            <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Boombox</span></h3>
-            <p className="mt-2 text-muted-foreground">Som alto e grave forte para sentir cada gol como se estivesse no estádio.</p>
-            <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$265</span></p>
-            <a {...ctaProps("caixa-som", "upsell-caixa-som")} className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Caixa de Som
-            </a>
-          </div>
-          <div id="produto-bandeira" className="scroll-mt-24 rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
-            <div className="relative w-full h-56 flex items-center justify-center">
-              <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
-            </div>
-            <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
-            <p className="mt-2 text-muted-foreground">Decore sua casa e mostre o verdadeiro espírito da torcida brasileira.</p>
-            <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$30</span></p>
-            <a {...ctaProps("bandeira", "upsell-bandeira")} className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Bandeira
-            </a>
-          </div>
-        </div>
-      </section>
 
       {/* COMPARAÇÃO */}
       <section className="py-24 px-6 bg-card/50">

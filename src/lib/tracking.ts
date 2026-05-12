@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-export type ProductId = "projetor" | "balde" | "caixa-som" | "bandeira";
+export type ProductId = "projetor";
 
 interface TrackOptions {
   product: ProductId;
@@ -19,9 +19,6 @@ interface TrackOptions {
 
 const PRODUCT_NAMES: Record<ProductId, string> = {
   projetor: "ArenaBox Pro",
-  balde: "Balde com Caixa de Som",
-  "caixa-som": "Caixa de Som Boombox",
-  bandeira: "Bandeira do Brasil",
 };
 
 export function buildCheckoutUrl(baseUrl: string, opts: TrackOptions): string {
