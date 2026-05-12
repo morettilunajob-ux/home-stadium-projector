@@ -142,7 +142,7 @@ function Index() {
             <p className="text-sm text-muted-foreground">frete calculado no checkout (aprox. R$316,90 total)</p>
           </div>
 
-          <a {...ctaProps("projetor", "hero")} className="mt-8 inline-flex items-center justify-center w-full max-w-md rounded-xl px-8 py-5 text-lg font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+          <a id="produto-projetor" {...ctaProps("projetor", "hero")} className="scroll-mt-24 mt-8 inline-flex items-center justify-center w-full max-w-md rounded-xl px-8 py-5 text-lg font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
             Quero meu ArenaBox Pro
           </a>
 
