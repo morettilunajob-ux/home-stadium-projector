@@ -94,22 +94,6 @@ function Index() {
             <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md product-glow" />
           </div>
 
-          {/* Quick product nav — apenas o projetor */}
-          <div className="mt-12 mx-auto max-w-xs">
-            <a
-              href="#produto-projetor"
-              onClick={(e) => { e.preventDefault(); document.getElementById("produto-projetor")?.scrollIntoView({ behavior: "smooth" }); }}
-              className="group relative block aspect-square rounded-2xl border-2 border-primary bg-gradient-to-br from-primary/15 via-card to-card p-4 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1.5"
-              style={{ boxShadow: "var(--shadow-gold)" }}
-            >
-              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
-                Principal
-              </span>
-              <img src={heroImg} alt="Projetor" className="h-32 w-auto product-glow transition-transform duration-300 group-hover:scale-110" loading="lazy" />
-              <span className="mt-2 text-xs font-black uppercase tracking-wider text-primary">Projetor</span>
-            </a>
-          </div>
-
           {/* Bloco persuasivo abaixo do projetor */}
           <div className="mt-10 mx-auto max-w-3xl">
             <p className="text-2xl md:text-3xl font-black uppercase leading-tight">
