@@ -4,7 +4,7 @@ import heroImg from "@/assets/projetor.png";
 import baldeImg from "@/assets/balde.png";
 import somImg from "@/assets/caixa-som.png";
 import bandeiraImg from "@/assets/bandeira.png";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 
@@ -93,7 +93,7 @@ function Index() {
           </p>
 
           <div className="relative mt-10 mx-auto max-w-2xl">
-            <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md" />
+            <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md product-glow" />
           </div>
 
           {/* Bloco persuasivo abaixo do projetor */}
@@ -183,7 +183,7 @@ function Index() {
       <section className="py-24 px-6">
         <div className="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
           <div className="relative">
-            <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm" />
+            <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm product-glow" />
           </div>
           <div>
             <h2 className="text-3xl md:text-4xl font-black uppercase">Balde com <span className="text-primary">caixa de som embutida</span></h2>
@@ -201,7 +201,7 @@ function Index() {
         <div className="mx-auto max-w-5xl mt-10 grid md:grid-cols-2 gap-6">
           <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
             <div className="relative w-full h-56 flex items-center justify-center">
-              <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
+              <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
             </div>
             <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Boombox</span></h3>
             <p className="mt-2 text-muted-foreground">Som alto e grave forte para sentir cada gol como se estivesse no estádio.</p>
@@ -212,7 +212,7 @@ function Index() {
           </div>
           <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
             <div className="relative w-full h-56 flex items-center justify-center">
-              <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
+              <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
             </div>
             <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
             <p className="mt-2 text-muted-foreground">Decore sua casa e mostre o verdadeiro espírito da torcida brasileira.</p>
@@ -253,6 +253,50 @@ function Index() {
 
       {/* FAQ */}
       <section className="py-24 px-6">
+        <div className="mx-auto max-w-5xl mb-20">
+          <div className="rounded-3xl border-2 border-primary/40 bg-card p-8 md:p-12" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <div className="flex flex-col items-center text-center">
+              <div className="rounded-full p-4" style={{ background: "var(--gradient-gold)" }}>
+                <ShieldCheck className="h-10 w-10 text-primary-foreground" />
+              </div>
+              <h2 className="mt-6 text-3xl md:text-5xl font-black uppercase">
+                Garantia de <span className="text-primary">risco zero</span>
+              </h2>
+              <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
+                Você compra com tranquilidade. Se não amar o ArenaBox Pro, devolvemos <span className="text-primary font-semibold">100% do seu dinheiro</span>. Sem perguntas, sem burocracia.
+              </p>
+            </div>
+
+            <div className="mt-10 grid md:grid-cols-3 gap-5">
+              <div className="rounded-2xl border border-border bg-background p-6 text-center">
+                <BadgeCheck className="h-8 w-8 text-primary mx-auto" />
+                <h3 className="mt-3 font-black uppercase">7 dias para testar</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Direito de arrependimento garantido por lei (Art. 49 CDC). Devolva em até 7 dias após o recebimento.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-6 text-center">
+                <RotateCcw className="h-8 w-8 text-primary mx-auto" />
+                <h3 className="mt-3 font-black uppercase">Troca em 30 dias</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Defeito de fábrica? Trocamos sem custo em até 30 dias. Você não corre nenhum risco.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-6 text-center">
+                <Truck className="h-8 w-8 text-primary mx-auto" />
+                <h3 className="mt-3 font-black uppercase">Reembolso total</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Se mudar de ideia, devolvemos cada centavo na mesma forma de pagamento. Simples assim.
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-8 text-center text-base text-foreground/90">
+              <span className="text-primary font-semibold">O risco é todo nosso.</span> Você só precisa testar e se apaixonar.
+            </p>
+          </div>
+        </div>
+
         <div className="mx-auto max-w-3xl">
           <h2 className="text-4xl md:text-5xl font-black text-center uppercase">Perguntas <span className="text-primary">frequentes</span></h2>
           <Accordion type="single" collapsible className="mt-10">
