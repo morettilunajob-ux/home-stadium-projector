@@ -201,6 +201,3 @@ function Index() {
   );
 }
 
-function Index() {
-  return <PlaceholderIndex />;
-}
