@@ -193,51 +193,6 @@ function Index() {
         ⚠️ Oferta especial ativa por tempo limitado durante a campanha da Copa
       </div>
 
-      {/* UPSELL */}
-      <section className="py-24 px-6">
-        <div id="produto-balde" className="scroll-mt-24 mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
-          <div className="relative">
-            <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm product-glow" />
-          </div>
-          <div>
-            <h2 className="text-3xl md:text-4xl font-black uppercase">Balde com <span className="text-primary">caixa de som embutida</span></h2>
-            <p className="mt-4 text-lg text-muted-foreground">Bebida sempre gelada e som alto no mesmo produto — 2 em 1.</p>
-            <p className="mt-2 text-muted-foreground">O combo perfeito para transformar qualquer jogo em evento.</p>
-            <p className="mt-6 text-4xl font-black">Apenas <span className="text-primary">R$100</span></p>
-            <a {...ctaProps("balde", "upsell-balde")} className="mt-6 inline-flex items-center justify-center w-full rounded-xl px-6 py-4 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Balde Party Som
-            </a>
-            <p className="mt-3 text-sm text-muted-foreground">🔥 Ideal para Copa, churrasco e festas com amigos</p>
-          </div>
-        </div>
-
-        {/* Extra upsells: Caixa de Som + Bandeira */}
-        <div className="mx-auto max-w-5xl mt-10 grid md:grid-cols-2 gap-6">
-          <div id="produto-som" className="scroll-mt-24 rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
-            <div className="relative w-full h-56 flex items-center justify-center">
-              <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
-            </div>
-            <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Boombox</span></h3>
-            <p className="mt-2 text-muted-foreground">Som alto e grave forte para sentir cada gol como se estivesse no estádio.</p>
-            <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$265</span></p>
-            <a {...ctaProps("caixa-som", "upsell-caixa-som")} className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Caixa de Som
-            </a>
-          </div>
-          <div id="produto-bandeira" className="scroll-mt-24 rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
-            <div className="relative w-full h-56 flex items-center justify-center">
-              <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto product-glow" />
-            </div>
-            <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
-            <p className="mt-2 text-muted-foreground">Decore sua casa e mostre o verdadeiro espírito da torcida brasileira.</p>
-            <p className="mt-3 text-3xl font-black">Apenas <span className="text-primary">R$30</span></p>
-            <a {...ctaProps("bandeira", "upsell-bandeira")} className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
-              Adicionar Bandeira
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* COMPARAÇÃO */}
       <section className="py-24 px-6 bg-card/50">
         <div className="mx-auto max-w-4xl">
