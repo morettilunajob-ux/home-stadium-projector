@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import heroImg from "@/assets/arenabox-hero.png";
-import baldeImg from "@/assets/balde-party.png";
+import heroImg from "@/assets/projetor.png";
+import baldeImg from "@/assets/balde.png";
+import somImg from "@/assets/caixa-som.png";
+import bandeiraImg from "@/assets/bandeira.png";
 import { Button } from "@/components/ui/button";
 import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -19,6 +21,8 @@ export const Route = createFileRoute("/")({
 
 const CHECKOUT_URL = "https://pay.kaiross.com.br/13qxfBIkBJKO";
 const UPSELL_URL = "https://pay.kaiross.com.br/toYaqm1esck6";
+const SOM_URL = "https://pay.kaiross.com.br/LvyNrKXNY2RX";
+const BANDEIRA_URL = "https://pay.kaiross.com.br/CiDSlddhxPPM";
 
 function Index() {
   return (
@@ -127,6 +131,32 @@ function Index() {
               Adicionar Balde Party
             </a>
             <p className="mt-3 text-sm text-muted-foreground">🔥 Ideal para Copa, churrasco e festas com amigos</p>
+          </div>
+        </div>
+
+        {/* Extra upsells: Caixa de Som + Bandeira */}
+        <div className="mx-auto max-w-5xl mt-10 grid md:grid-cols-2 gap-6">
+          <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
+            <div className="relative w-full h-56 flex items-center justify-center">
+              <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.2 }} aria-hidden />
+              <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
+            </div>
+            <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Potente</span></h3>
+            <p className="mt-2 text-muted-foreground">Som alto e grave forte para sentir cada gol como se estivesse no estádio.</p>
+            <a href={SOM_URL} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+              Adicionar Caixa de Som
+            </a>
+          </div>
+          <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
+            <div className="relative w-full h-56 flex items-center justify-center">
+              <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.2 }} aria-hidden />
+              <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
+            </div>
+            <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
+            <p className="mt-2 text-muted-foreground">Decore sua casa e mostre o verdadeiro espírito da torcida brasileira.</p>
+            <a href={BANDEIRA_URL} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center w-full rounded-xl px-6 py-3.5 font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+              Adicionar Bandeira
+            </a>
           </div>
         </div>
       </section>
