@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/projetor.png";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Wifi, Maximize } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 
@@ -133,13 +133,13 @@ function Index() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
-              <Sparkles className="h-3.5 w-3.5" /> ArenaBox Pro
+              <Sparkles className="h-3.5 w-3.5" /> Mini Projetor YG-300
             </span>
             <h2 className="mt-6 text-4xl md:text-5xl font-black uppercase">
-              Especificações <span className="text-primary">técnicas</span>
+              Conheça o <span className="text-primary">ArenaBox Pro</span>
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Tudo o que você precisa para transformar qualquer parede em um estádio.
+              Mini projetor portátil LED com suporte a 1080p, 600 lúmens e entradas HDMI, USB, AV e cartão TF. Perfeito para casa, trabalho ou estudo.
             </p>
           </div>
 
@@ -150,12 +150,12 @@ function Index() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { icon: Maximize, title: "Tela até 200\"", text: "Projeta uma tela gigante de 60\" a 200\" em qualquer parede branca." },
-                { icon: Sun, title: "Brilho 9500 lúmens", text: "Imagem nítida e vibrante mesmo em ambientes com pouca luz." },
-                { icon: Monitor, title: "Full HD 1080p", text: "Resolução nativa HD com suporte a vídeos 4K via decoder." },
-                { icon: Wifi, title: "Wi-Fi + Bluetooth", text: "Espelhe o celular sem fios. Conecta com iOS e Android." },
-                { icon: Tv, title: "HDMI · USB · AV", text: "Compatível com TV box, videogame, notebook e pendrive." },
-                { icon: Zap, title: "Instalação rápida", text: "Plug and play. Pronto para usar em menos de 1 minuto." },
+                { icon: Maximize, title: "Tela 24\" a 60\"", text: "Distância de projeção ajustável de 1,5 a 2 metros para o tamanho ideal." },
+                { icon: Sun, title: "600 lúmens · 800:1", text: "Imagem nítida em ambientes escuros ou com pouca luminosidade." },
+                { icon: Monitor, title: "Suporte a 1080p", text: "Resolução nativa 240×320 com suporte de entrada até 1920×1080." },
+                { icon: Cable, title: "HDMI · USB · AV · TF", text: "Conecte notebook, videogame, TV box, pendrive ou cartão de memória." },
+                { icon: Volume2, title: "Alto-falante embutido", text: "Áudio integrado e ruído baixíssimo de apenas 24 dB em operação." },
+                { icon: Lightbulb, title: "LED · 30.000 horas", text: "Lâmpada LED de longa duração e baixíssima necessidade de manutenção." },
               ].map(({ icon: Icon, title, text }, i) => (
                 <div key={i} className="rounded-2xl border border-border bg-background p-5">
                   <div className="inline-flex rounded-lg p-2" style={{ background: "var(--gradient-gold)" }}>
@@ -165,6 +165,104 @@ function Index() {
                   <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{text}</p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* DESCRIÇÃO + ESPECIFICAÇÕES COMPLETAS + ITENS INCLUSOS */}
+          <div className="mt-16 grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 rounded-2xl border border-border bg-background p-6 md:p-8">
+              <h3 className="text-2xl font-black uppercase">Sobre o produto</h3>
+              <div className="mt-4 space-y-4 text-foreground/90 leading-relaxed">
+                <p>O <strong>Mini Projetor Portátil LED 1080p 600 Lumens HDMI YG300</strong> é compacto e portátil, com tecnologia de iluminação LED para projetar imagens em alta definição. Reproduz vídeos e imagens com qualidade nítida e detalhada.</p>
+                <p>Possui saída <strong>HDMI</strong> e suporte a <strong>AV, USB e cartão de memória</strong> — conecte laptops, tablets, consoles de videogame, TV box e reprodutores de mídia de forma prática.</p>
+                <p>Com <strong>600 lúmens</strong> de brilho, é ideal para ambientes escuros ou com pouca luz. Funciona em casa para filmes, séries e jogos, e também em apresentações de negócios ou aulas.</p>
+                <p>Tamanho compacto que cabe em qualquer mochila e lâmpada LED com vida útil de até <strong>30.000 horas</strong> — longa duração e baixa manutenção.</p>
+              </div>
+
+              <h4 className="mt-8 text-xl font-black uppercase text-primary">Benefícios</h4>
+              <ul className="mt-4 grid sm:grid-cols-2 gap-2.5">
+                {[
+                  "Tamanho compacto e portátil, fácil de transportar",
+                  "Imagem nítida, comparável a um projetor grande",
+                  "Suporte a vídeo 1080p para filmes e jogos em HD",
+                  "Vida útil de 30.000 horas do LED",
+                  "Compatível com diversos formatos de mídia",
+                  "Distância de projeção ajustável conforme a necessidade",
+                ].map((b, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-foreground/90">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <h4 className="mt-8 text-xl font-black uppercase text-primary">Especificações técnicas</h4>
+              <dl className="mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                {[
+                  ["Modelo", "YG-300"],
+                  ["Tipo de exibição", "LCD"],
+                  ["Resolução original", "240×320"],
+                  ["Resolução suportada", "1920×1080"],
+                  ["Brilho", "600 lúmens"],
+                  ["Contraste", "800:1"],
+                  ["Distância de projeção", "1,5 – 2 m"],
+                  ["Tamanho da projeção", "24 – 60 polegadas"],
+                  ["Interfaces", "HDMI, USB, áudio 3.5mm, cartão TF"],
+                  ["Certificações", "CE, ROHS, FCC"],
+                  ["Lâmpada", "LED"],
+                  ["Vida útil do LED", "30.000 horas"],
+                  ["Formatos de imagem", "BMP, PNG, JPEG"],
+                  ["Formatos de vídeo", "MP4, RMVB, AVI, RM, MKV e outros"],
+                  ["Formatos de áudio", "MP3, WMA, OGG, AAC, FLAC, APE, WAV"],
+                  ["Entrada de tensão", "100–240 V · 50/60 Hz · 2.0A"],
+                  ["Potência de saída", "12V · 1.5A"],
+                  ["Alto-falante embutido", "Sim"],
+                  ["Ruído", "24 dB"],
+                  ["Material da carcaça", "ABS"],
+                  ["Tamanho do produto", "12,5 × 8,5 × 4,5 cm"],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between gap-3 border-b border-border/60 py-1.5">
+                    <dt className="text-muted-foreground">{k}</dt>
+                    <dd className="font-medium text-right">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <div className="space-y-6">
+              <div className="rounded-2xl border-2 border-primary/40 bg-background p-6" style={{ boxShadow: "var(--shadow-glow)" }}>
+                <div className="inline-flex rounded-lg p-2" style={{ background: "var(--gradient-gold)" }}>
+                  <Package className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h3 className="mt-3 text-xl font-black uppercase">Itens inclusos</h3>
+                <ul className="mt-4 space-y-2.5 text-sm">
+                  {[
+                    "1× Mini Projetor Portátil LED 1080p 600 Lumens",
+                    "1× Cabo P2 × AV Fêmea",
+                    "1× Manual do usuário",
+                    "1× Fonte de alimentação",
+                    "1× Controle remoto",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-background p-6">
+                <div className="inline-flex rounded-lg p-2" style={{ background: "var(--gradient-gold)" }}>
+                  <BadgeCheck className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h3 className="mt-3 text-lg font-black uppercase">Testado antes do envio</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Todos os produtos são testados</strong> antes do envio para garantir que cheguem funcionando perfeitamente.
+                </p>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                  Qualquer dúvida, entre em contato. Respondemos o mais rápido possível em <span className="text-primary font-semibold">horário comercial</span>.
+                </p>
+              </div>
             </div>
           </div>
 
