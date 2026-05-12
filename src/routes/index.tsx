@@ -93,8 +93,7 @@ function Index() {
           </p>
 
           <div className="relative mt-10 mx-auto max-w-2xl">
-            <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.35 }} aria-hidden />
-            <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md drop-shadow-2xl" />
+            <img src={heroImg} alt="Mini projetor ArenaBox Pro" width={1024} height={1024} className="relative mx-auto w-full max-w-md" />
           </div>
 
           {/* Bloco persuasivo abaixo do projetor */}
@@ -184,7 +183,6 @@ function Index() {
       <section className="py-24 px-6">
         <div className="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-card p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center" style={{ boxShadow: "var(--shadow-glow)" }}>
           <div className="relative">
-            <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.3 }} aria-hidden />
             <img src={baldeImg} alt="Balde com caixa de som embutida" width={768} height={768} loading="lazy" className="relative mx-auto w-full max-w-sm" />
           </div>
           <div>
@@ -203,7 +201,6 @@ function Index() {
         <div className="mx-auto max-w-5xl mt-10 grid md:grid-cols-2 gap-6">
           <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
             <div className="relative w-full h-56 flex items-center justify-center">
-              <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.2 }} aria-hidden />
               <img src={somImg} alt="Caixa de Som Bluetooth" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
             </div>
             <h3 className="mt-4 text-2xl font-black uppercase">Caixa de Som <span className="text-primary">Boombox</span></h3>
@@ -215,7 +212,6 @@ function Index() {
           </div>
           <div className="rounded-3xl border border-border bg-card p-6 flex flex-col items-center text-center">
             <div className="relative w-full h-56 flex items-center justify-center">
-              <div className="absolute inset-0 blur-3xl rounded-full" style={{ background: "var(--gradient-gold)", opacity: 0.2 }} aria-hidden />
               <img src={bandeiraImg} alt="Bandeira do Brasil" width={400} height={400} loading="lazy" className="relative max-h-56 w-auto" />
             </div>
             <h3 className="mt-4 text-2xl font-black uppercase">Bandeira do <span className="text-primary">Brasil</span></h3>
