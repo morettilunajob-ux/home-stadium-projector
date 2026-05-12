@@ -144,6 +144,55 @@ function Index() {
         </div>
       </section>
 
+      {/* ESPECIFICAÇÕES DO PROJETOR */}
+      <section id="projetor-specs" className="scroll-mt-24 py-24 px-6 bg-card/50">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
+              <Sparkles className="h-3.5 w-3.5" /> ArenaBox Pro
+            </span>
+            <h2 className="mt-6 text-4xl md:text-5xl font-black uppercase">
+              Especificações <span className="text-primary">técnicas</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              Tudo o que você precisa para transformar qualquer parede em um estádio.
+            </p>
+          </div>
+
+          <div className="mt-14 grid lg:grid-cols-2 gap-10 items-center">
+            <div className="relative rounded-3xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card p-8 md:p-12 flex items-center justify-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+              <img src={heroImg} alt="Mini projetor ArenaBox Pro em destaque" width={1024} height={1024} loading="lazy" className="w-full max-w-md product-glow" />
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { icon: Maximize, title: "Tela até 200\"", text: "Projeta uma tela gigante de 60\" a 200\" em qualquer parede branca." },
+                { icon: Sun, title: "Brilho 9500 lúmens", text: "Imagem nítida e vibrante mesmo em ambientes com pouca luz." },
+                { icon: Monitor, title: "Full HD 1080p", text: "Resolução nativa HD com suporte a vídeos 4K via decoder." },
+                { icon: Wifi, title: "Wi-Fi + Bluetooth", text: "Espelhe o celular sem fios. Conecta com iOS e Android." },
+                { icon: Tv, title: "HDMI · USB · AV", text: "Compatível com TV box, videogame, notebook e pendrive." },
+                { icon: Zap, title: "Instalação rápida", text: "Plug and play. Pronto para usar em menos de 1 minuto." },
+              ].map(({ icon: Icon, title, text }, i) => (
+                <div key={i} className="rounded-2xl border border-border bg-background p-5">
+                  <div className="inline-flex rounded-lg p-2" style={{ background: "var(--gradient-gold)" }}>
+                    <Icon className="h-5 w-5 text-primary-foreground" />
+                  </div>
+                  <h3 className="mt-3 font-black uppercase text-base">{title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <a {...ctaProps("projetor", "specs")} className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-5 text-lg font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02]" style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}>
+              <ShoppingCart className="h-5 w-5" /> Quero meu ArenaBox Pro
+            </a>
+            <p className="mt-3 text-sm text-muted-foreground">12x disponível • R$297 à vista</p>
+          </div>
+        </div>
+      </section>
+
       {/* EXPERIÊNCIA */}
       <section className="py-24 px-6">
         <div className="mx-auto max-w-4xl text-center">
