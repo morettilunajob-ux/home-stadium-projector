@@ -402,7 +402,7 @@ function AdmSPP() {
           <div className="mt-5 mx-auto max-w-sm">
             <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
               <span className="text-primary flex items-center gap-1"><Flame className="h-3 w-3" /> Últimas unidades</span>
-              <span className="text-foreground/80">apenas {stock} restantes</span>
+              <span className="text-foreground/80">apenas <span className={`tabular-nums ${stock <= 8 ? "heartbeat text-primary" : ""}`}>{stock}</span> restantes</span>
             </div>
             <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
               <div
