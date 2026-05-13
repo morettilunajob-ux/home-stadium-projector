@@ -390,16 +390,6 @@ function AdmSPP() {
               height={1024}
               className="mx-auto w-full max-w-sm product-glow"
             />
-              {/* LED da lente — piscando */}
-              <span
-                className="led-blink absolute h-2 w-2 rounded-full"
-                style={{
-                  left: "12%",
-                  top: "50%",
-                  background: "oklch(0.95 0.2 88)",
-                  boxShadow: "0 0 14px 4px oklch(0.9 0.2 88 / 0.9)",
-                }}
-              />
             </div>
 
             <div className="pointer-events-none absolute inset-0" aria-hidden>
