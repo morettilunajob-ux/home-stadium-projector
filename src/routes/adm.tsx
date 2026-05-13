@@ -596,15 +596,6 @@ function AdmSPP() {
               </span>
               <Eye className="h-3 w-3" /> {viewers} pessoas vendo agora
             </div>
-            <button
-              type="button"
-              onClick={() => setCalibrating((v) => !v)}
-              className="absolute top-2 left-2 z-40 rounded-full bg-background/80 backdrop-blur border border-primary/40 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider hover:bg-background"
-              aria-pressed={calibrating}
-              title="Calibrar posição da lente"
-            >
-              {calibrating ? "Sair calibração" : "Calibrar lente"}
-            </button>
           </div>
 
           {/* PREÇO ANCORADO */}
