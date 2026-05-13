@@ -92,9 +92,16 @@ function AdmSPP() {
   const [pulseSold, setPulseSold] = useState(false);
   // Feixe interativo — segue o cursor/toque
   const stageRef = useRef<HTMLDivElement | null>(null);
+  const imageRef = useRef<HTMLDivElement | null>(null);
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
+  // Offset do feixe relativo à lente (px) — segue o cursor
+  const [beamOffset, setBeamOffset] = useState({ dx: 0, dy: 0, intensity: 0 });
+  // Partículas de poeira dinâmicas
+  const [dust, setDust] = useState<{ id: number; tx: number; ty: number; size: number; delay: number }[]>([]);
+  const dustIdRef = useRef(0);
   // Posição da lente (calibrável, salva em localStorage)
-  const DEFAULT_LENS = { x: 58, y: 55 };
+  // Coordenadas em % DO IMAGEM (não do palco) — auto-calibra em qualquer tela
+  const DEFAULT_LENS = { x: 60, y: 55 };
   const [lensPos, setLensPos] = useState(DEFAULT_LENS);
   const [calibrating, setCalibrating] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -116,12 +123,49 @@ function AdmSPP() {
   }, []);
 
   const updateLensFromPointer = (clientX: number, clientY: number) => {
-    const el = stageRef.current;
+    const el = imageRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
     const y = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
     setLensPos({ x, y });
+  };
+
+  // Tracker do cursor — calcula offset/intensidade + spawna poeira
+  const trackPointer = (clientX: number, clientY: number) => {
+    const img = imageRef.current;
+    if (!img) return;
+    const r = img.getBoundingClientRect();
+    const lx = r.left + r.width * (lensPos.x / 100);
+    const ly = r.top + r.height * (lensPos.y / 100);
+    const dx = clientX - lx;
+    const dy = clientY - ly;
+    const dist = Math.hypot(dx, dy);
+    const intensity = Math.max(0, Math.min(1, 1 - dist / (r.width * 1.2)));
+    // Limita o quanto o feixe se desloca em px
+    const max = r.width * 0.35;
+    const k = Math.min(1, max / Math.max(1, dist));
+    setBeamOffset({ dx: dx * k * 0.6, dy: dy * k * 0.6, intensity });
+    setBeam({ angle: 0, length: 0.8 + intensity * 0.9, active: true });
+
+    // Spawn de poeira em direção ao cursor — mais quanto mais perto
+    if (Math.random() < 0.35 + intensity * 0.55) {
+      const id = ++dustIdRef.current;
+      const ang = Math.atan2(dy, dx);
+      const spread = (Math.random() - 0.5) * 0.7;
+      const reach = 60 + Math.random() * 90 + intensity * 80;
+      const tx = Math.cos(ang + spread) * reach;
+      const ty = Math.sin(ang + spread) * reach;
+      const p = { id, tx, ty, size: 1 + Math.random() * 3, delay: Math.random() * 0.15 };
+      setDust((arr) => [...arr.slice(-30), p]);
+      window.setTimeout(() => setDust((arr) => arr.filter((d) => d.id !== id)), 1700);
+    }
+  };
+
+  const releasePointer = () => {
+    setBeam((b) => ({ ...b, active: false, length: 1 }));
+    setBeamOffset({ dx: 0, dy: 0, intensity: 0 });
+    setDragging(false);
   };
 
   useEffect(() => {
@@ -339,16 +383,9 @@ function AdmSPP() {
                 updateLensFromPointer(e.clientX, e.clientY);
                 return;
               }
-              const el = stageRef.current;
-              if (!el) return;
-              const r = el.getBoundingClientRect();
-              const lx = r.left + r.width * (lensPos.x / 100);
-              const ly = r.top + r.height * (lensPos.y / 100);
-              const dist = Math.hypot(e.clientX - lx, e.clientY - ly);
-              const intensity = Math.max(0.4, Math.min(1.6, 1 - dist / (r.width * 0.9) + 0.6));
-              setBeam({ angle: 0, length: intensity, active: true });
+              trackPointer(e.clientX, e.clientY);
             }}
-            onMouseLeave={() => { setBeam((b) => ({ ...b, active: false, length: 1 })); setDragging(false); }}
+            onMouseLeave={releasePointer}
             onMouseUp={() => setDragging(false)}
             onTouchMove={(e) => {
               const t = e.touches[0];
@@ -357,126 +394,190 @@ function AdmSPP() {
                 updateLensFromPointer(t.clientX, t.clientY);
                 return;
               }
-              const el = stageRef.current;
-              if (!el) return;
-              const r = el.getBoundingClientRect();
-              const lx = r.left + r.width * (lensPos.x / 100);
-              const ly = r.top + r.height * (lensPos.y / 100);
-              const dist = Math.hypot(t.clientX - lx, t.clientY - ly);
-              const intensity = Math.max(0.4, Math.min(1.6, 1 - dist / (r.width * 0.9) + 0.6));
-              setBeam({ angle: 0, length: intensity, active: true });
+              trackPointer(t.clientX, t.clientY);
             }}
-            onTouchEnd={() => { setBeam((b) => ({ ...b, active: false, length: 1 })); setDragging(false); }}
+            onTouchEnd={releasePointer}
           >
-            {/* HALO FRONTAL — luz amarelada saindo da lente em direção ao usuário */}
-            <div
-              className="pointer-events-none absolute z-0 beam-pulse"
-              aria-hidden
-              style={{
-                left: `${lensPos.x}%`,
-                top: `${lensPos.y}%`,
-                width: `${340 * beam.length}px`,
-                height: `${340 * beam.length}px`,
-                transform: "translate(-50%, -50%)",
-                background:
-                  "radial-gradient(circle, oklch(0.95 0.2 88 / 0.55) 0%, oklch(0.9 0.2 88 / 0.28) 25%, oklch(0.85 0.18 78 / 0.12) 50%, transparent 75%)",
-                filter: "blur(18px)",
-                mixBlendMode: "screen",
-                opacity: beam.active ? 1 : 0.85,
-                transition: "width .5s ease-out, height .5s ease-out, opacity .35s ease",
-              }}
-            />
-            {/* Núcleo intenso na lente */}
-            <div
-              className="pointer-events-none absolute z-0"
-              aria-hidden
-              style={{
-                left: `${lensPos.x}%`,
-                top: `${lensPos.y}%`,
-                width: 90,
-                height: 90,
-                transform: "translate(-50%, -50%)",
-                background: "radial-gradient(circle, oklch(0.99 0.22 88 / 0.95), oklch(0.92 0.2 88 / 0.4) 40%, transparent 75%)",
-                filter: "blur(6px)",
-                mixBlendMode: "screen",
-              }}
-            />
-            {/* Lens flare horizontal sutil */}
-            <div
-              className="pointer-events-none absolute z-0"
-              aria-hidden
-              style={{
-                left: `${lensPos.x}%`,
-                top: `${lensPos.y}%`,
-                width: `${260 * beam.length}px`,
-                height: 6,
-                transform: "translate(-50%, -50%)",
-                background: "linear-gradient(90deg, transparent, oklch(0.98 0.22 88 / 0.7), transparent)",
-                filter: "blur(3px)",
-                mixBlendMode: "screen",
-                opacity: beam.active ? 0.85 : 0.5,
-                transition: "width .5s ease-out, opacity .35s ease",
-              }}
-            />
-
-            {/* MODO CALIBRAÇÃO — alça arrastável + HUD */}
-            {calibrating && (
-              <>
-                <div
-                  role="button"
-                  aria-label="Arraste para posicionar a lente"
-                  className="absolute z-30 cursor-grab active:cursor-grabbing rounded-full border-2 border-dashed border-primary"
-                  style={{
-                    left: `${lensPos.x}%`,
-                    top: `${lensPos.y}%`,
-                    width: 90,
-                    height: 90,
-                    transform: "translate(-50%, -50%)",
-                    boxShadow: "0 0 0 2px oklch(0.16 0.04 155 / 0.6) inset, 0 0 24px oklch(0.82 0.17 88 / 0.6)",
-                    background: "oklch(0.82 0.17 88 / 0.08)",
-                  }}
-                  onMouseDown={(e) => { e.preventDefault(); setDragging(true); updateLensFromPointer(e.clientX, e.clientY); }}
-                  onTouchStart={(e) => { const t = e.touches[0]; if (t) { setDragging(true); updateLensFromPointer(t.clientX, t.clientY); } }}
-                >
-                  <div className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-primary" />
-                </div>
-                <div className="absolute top-2 left-2 z-30 rounded-xl bg-background/95 backdrop-blur border border-primary/40 p-2 text-[11px] font-mono shadow-lg">
-                  <div className="font-bold uppercase tracking-wider text-primary text-[10px] mb-1">Calibrar lente</div>
-                  <div>x: {lensPos.x.toFixed(1)}% · y: {lensPos.y.toFixed(1)}%</div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <button
-                      onClick={() => {
-                        localStorage.setItem("arenabox_lens_pos", JSON.stringify(lensPos));
-                      }}
-                      className="rounded-md px-2 py-1 text-[10px] font-bold uppercase text-primary-foreground"
-                      style={{ background: "var(--gradient-gold)" }}
-                    >Salvar</button>
-                    <button
-                      onClick={() => {
-                        setLensPos(DEFAULT_LENS);
-                        localStorage.removeItem("arenabox_lens_pos");
-                      }}
-                      className="rounded-md px-2 py-1 text-[10px] font-bold uppercase border border-border"
-                    >Resetar</button>
-                    <button
-                      onClick={() => setCalibrating(false)}
-                      className="rounded-md px-2 py-1 text-[10px] font-bold uppercase border border-border"
-                    >Sair</button>
-                  </div>
-                  <div className="mt-1 text-[9px] text-muted-foreground">Arraste o círculo até a lente</div>
-                </div>
-              </>
-            )}
-
             {/* PROJETOR — flutua suavemente */}
-            <div className="projector-float relative">
+            <div ref={imageRef} className="projector-float relative mx-auto w-full max-w-sm">
             <img
               src={heroImg}
               alt="ArenaBox Pro — mini projetor portátil"
               width={1024}
               height={1024}
-              className="mx-auto w-full max-w-sm product-glow"
+              className="block w-full product-glow"
             />
+
+              {/* HALO FRONTAL — auto-calibrado em % da imagem, segue o cursor */}
+              <div
+                className="pointer-events-none absolute z-10 beam-pulse"
+                aria-hidden
+                style={{
+                  left: `calc(${lensPos.x}% + ${beamOffset.dx * 0.45}px)`,
+                  top: `calc(${lensPos.y}% + ${beamOffset.dy * 0.45}px)`,
+                  width: `${55 + 35 * beam.length}%`,
+                  aspectRatio: "1 / 1",
+                  transform: "translate(-50%, -50%)",
+                  background:
+                    "radial-gradient(circle, oklch(0.97 0.2 88 / 0.65) 0%, oklch(0.92 0.2 88 / 0.35) 22%, oklch(0.85 0.18 78 / 0.15) 48%, transparent 72%)",
+                  filter: "blur(20px)",
+                  mixBlendMode: "screen",
+                  opacity: 0.7 + beamOffset.intensity * 0.3,
+                  transition: "left .25s ease-out, top .25s ease-out, width .35s ease-out, opacity .25s ease",
+                }}
+              />
+
+              {/* GHOST orb secundário (lens flare clássico) */}
+              <div
+                className="pointer-events-none absolute z-10"
+                aria-hidden
+                style={{
+                  left: `calc(${lensPos.x}% + ${beamOffset.dx * 0.9}px)`,
+                  top: `calc(${lensPos.y}% + ${beamOffset.dy * 0.9}px)`,
+                  width: 60,
+                  height: 60,
+                  transform: "translate(-50%, -50%)",
+                  background: "radial-gradient(circle, oklch(0.95 0.18 78 / 0.55), transparent 70%)",
+                  filter: "blur(10px)",
+                  mixBlendMode: "screen",
+                  opacity: 0.4 + beamOffset.intensity * 0.5,
+                  transition: "left .35s ease-out, top .35s ease-out, opacity .25s",
+                }}
+              />
+              <div
+                className="pointer-events-none absolute z-10"
+                aria-hidden
+                style={{
+                  left: `calc(${lensPos.x}% - ${beamOffset.dx * 0.4}px)`,
+                  top: `calc(${lensPos.y}% - ${beamOffset.dy * 0.4}px)`,
+                  width: 26,
+                  height: 26,
+                  transform: "translate(-50%, -50%)",
+                  background: "radial-gradient(circle, oklch(0.99 0.22 88 / 0.85), transparent 70%)",
+                  filter: "blur(4px)",
+                  mixBlendMode: "screen",
+                  opacity: 0.5 + beamOffset.intensity * 0.5,
+                  transition: "left .35s ease-out, top .35s ease-out",
+                }}
+              />
+
+              {/* NÚCLEO da lente — gradiente esférico premium */}
+              <div
+                className="pointer-events-none absolute z-10"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: `${22 + 6 * beam.length}%`,
+                  aspectRatio: "1 / 1",
+                  transform: "translate(-50%, -50%)",
+                  background:
+                    "radial-gradient(circle at 38% 35%, oklch(1 0 0 / 0.95) 0%, oklch(0.99 0.22 88 / 0.9) 18%, oklch(0.9 0.2 78 / 0.45) 50%, transparent 78%)",
+                  filter: "blur(4px)",
+                  mixBlendMode: "screen",
+                }}
+              />
+
+              {/* LENS FLARE anamórfico — streak horizontal */}
+              <div
+                className="pointer-events-none absolute z-10 flare-shimmer"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: `${85 + 25 * beam.length}%`,
+                  height: 8,
+                  transform: "translate(-50%, -50%)",
+                  background:
+                    "linear-gradient(90deg, transparent 0%, oklch(0.98 0.18 88 / 0.45) 25%, oklch(1 0 0 / 0.85) 50%, oklch(0.98 0.18 88 / 0.45) 75%, transparent 100%)",
+                  filter: "blur(2.5px)",
+                  mixBlendMode: "screen",
+                  opacity: 0.55 + beamOffset.intensity * 0.45,
+                }}
+              />
+              {/* Streak vertical sutil */}
+              <div
+                className="pointer-events-none absolute z-10"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: 4,
+                  height: `${40 + 15 * beam.length}%`,
+                  transform: "translate(-50%, -50%)",
+                  background:
+                    "linear-gradient(180deg, transparent, oklch(0.98 0.18 88 / 0.6), transparent)",
+                    filter: "blur(2px)",
+                  mixBlendMode: "screen",
+                  opacity: 0.35 + beamOffset.intensity * 0.5,
+                }}
+              />
+
+              {/* PARTÍCULAS DE POEIRA — saem da lente em direção ao cursor */}
+              <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden>
+                {dust.map((p) => (
+                  <span
+                    key={p.id}
+                    className="dust-trail absolute rounded-full"
+                    style={{
+                      left: `${lensPos.x}%`,
+                      top: `${lensPos.y}%`,
+                      width: p.size,
+                      height: p.size,
+                      background: "oklch(0.98 0.18 88 / 0.95)",
+                      boxShadow: "0 0 8px oklch(0.95 0.2 88 / 0.85)",
+                      // @ts-expect-error CSS custom props
+                      "--tx": `${p.tx}px`,
+                      "--ty": `${p.ty}px`,
+                      animationDelay: `${p.delay}s`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* MODO CALIBRAÇÃO — alça arrastável + HUD (dentro da imagem) */}
+              {calibrating && (
+                <>
+                  <div
+                    role="button"
+                    aria-label="Arraste para posicionar a lente"
+                    className="absolute z-30 cursor-grab active:cursor-grabbing rounded-full border-2 border-dashed border-primary"
+                    style={{
+                      left: `${lensPos.x}%`,
+                      top: `${lensPos.y}%`,
+                      width: 90,
+                      height: 90,
+                      transform: "translate(-50%, -50%)",
+                      boxShadow: "0 0 0 2px oklch(0.16 0.04 155 / 0.6) inset, 0 0 24px oklch(0.82 0.17 88 / 0.6)",
+                      background: "oklch(0.82 0.17 88 / 0.08)",
+                    }}
+                    onMouseDown={(e) => { e.preventDefault(); setDragging(true); updateLensFromPointer(e.clientX, e.clientY); }}
+                    onTouchStart={(e) => { const t = e.touches[0]; if (t) { setDragging(true); updateLensFromPointer(t.clientX, t.clientY); } }}
+                  >
+                    <div className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-primary" />
+                  </div>
+                  <div className="absolute -top-2 left-2 z-30 rounded-xl bg-background/95 backdrop-blur border border-primary/40 p-2 text-[11px] font-mono shadow-lg">
+                    <div className="font-bold uppercase tracking-wider text-primary text-[10px] mb-1">Calibrar lente</div>
+                    <div>x: {lensPos.x.toFixed(1)}% · y: {lensPos.y.toFixed(1)}%</div>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <button
+                        onClick={() => { localStorage.setItem("arenabox_lens_pos", JSON.stringify(lensPos)); }}
+                        className="rounded-md px-2 py-1 text-[10px] font-bold uppercase text-primary-foreground"
+                        style={{ background: "var(--gradient-gold)" }}
+                      >Salvar</button>
+                      <button
+                        onClick={() => { setLensPos(DEFAULT_LENS); localStorage.removeItem("arenabox_lens_pos"); }}
+                        className="rounded-md px-2 py-1 text-[10px] font-bold uppercase border border-border"
+                      >Resetar</button>
+                      <button
+                        onClick={() => setCalibrating(false)}
+                        className="rounded-md px-2 py-1 text-[10px] font-bold uppercase border border-border"
+                      >Sair</button>
+                    </div>
+                    <div className="mt-1 text-[9px] text-muted-foreground">Arraste o círculo até a lente</div>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="pointer-events-none absolute inset-0" aria-hidden>
