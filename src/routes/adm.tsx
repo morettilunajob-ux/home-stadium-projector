@@ -308,115 +308,78 @@ function AdmSPP() {
               const el = stageRef.current;
               if (!el) return;
               const r = el.getBoundingClientRect();
-              // Origem da lente (≈ 12% da largura do projetor centralizado, meio vertical)
-              const ox = r.left + r.width * 0.5 - r.width * 0.5 * 0.76; // ~12% da imagem (max-w-sm centrada)
-              const oy = r.top + r.height * 0.5;
-              const dx = e.clientX - ox;
-              const dy = e.clientY - oy;
-              const angle = Math.max(-55, Math.min(55, (Math.atan2(dy, dx) * 180) / Math.PI));
-              const dist = Math.min(1.6, Math.max(0.6, Math.hypot(dx, dy) / (r.width * 0.5)));
-              setBeam({ angle, length: dist, active: true });
+              // Posição da LENTE de frente (≈ 58% do x, 55% do y do palco)
+              const lx = r.left + r.width * 0.58;
+              const ly = r.top + r.height * 0.55;
+              const dist = Math.hypot(e.clientX - lx, e.clientY - ly);
+              const intensity = Math.max(0.4, Math.min(1.6, 1 - dist / (r.width * 0.9) + 0.6));
+              setBeam({ angle: 0, length: intensity, active: true });
             }}
-            onMouseLeave={() => setBeam((b) => ({ ...b, active: false }))}
+            onMouseLeave={() => setBeam((b) => ({ ...b, active: false, length: 1 }))}
             onTouchMove={(e) => {
               const t = e.touches[0];
               if (!t) return;
               const el = stageRef.current;
               if (!el) return;
               const r = el.getBoundingClientRect();
-              const ox = r.left + r.width * 0.5 - r.width * 0.5 * 0.76;
-              const oy = r.top + r.height * 0.5;
-              const dx = t.clientX - ox;
-              const dy = t.clientY - oy;
-              const angle = Math.max(-55, Math.min(55, (Math.atan2(dy, dx) * 180) / Math.PI));
-              const dist = Math.min(1.6, Math.max(0.6, Math.hypot(dx, dy) / (r.width * 0.5)));
-              setBeam({ angle, length: dist, active: true });
+              const lx = r.left + r.width * 0.58;
+              const ly = r.top + r.height * 0.55;
+              const dist = Math.hypot(t.clientX - lx, t.clientY - ly);
+              const intensity = Math.max(0.4, Math.min(1.6, 1 - dist / (r.width * 0.9) + 0.6));
+              setBeam({ angle: 0, length: intensity, active: true });
             }}
-            onTouchEnd={() => setBeam((b) => ({ ...b, active: false }))}
+            onTouchEnd={() => setBeam((b) => ({ ...b, active: false, length: 1 }))}
           >
-            {/* FEIXE DE LUZ INTERATIVO — sai da lente e segue o cursor/toque */}
+            {/* HALO FRONTAL — luz amarelada saindo da lente em direção ao usuário */}
+            <div
+              className="pointer-events-none absolute z-0 beam-pulse"
+              aria-hidden
+              style={{
+                left: "58%",
+                top: "55%",
+                width: `${340 * beam.length}px`,
+                height: `${340 * beam.length}px`,
+                transform: "translate(-50%, -50%)",
+                background:
+                  "radial-gradient(circle, oklch(0.95 0.2 88 / 0.55) 0%, oklch(0.9 0.2 88 / 0.28) 25%, oklch(0.85 0.18 78 / 0.12) 50%, transparent 75%)",
+                filter: "blur(18px)",
+                mixBlendMode: "screen",
+                opacity: beam.active ? 1 : 0.85,
+                transition: "width .5s ease-out, height .5s ease-out, opacity .35s ease",
+              }}
+            />
+            {/* Núcleo intenso na lente */}
             <div
               className="pointer-events-none absolute z-0"
               aria-hidden
               style={{
-                left: "12%",
-                top: "50%",
-                width: `${140 * beam.length}%`,
-                height: "60%",
-                transform: `translateY(-50%) rotate(${beam.angle}deg)`,
-                transformOrigin: "0% 50%",
-                transition: beam.active
-                  ? "transform .12s linear, width .25s ease-out"
-                  : "transform .9s cubic-bezier(.2,.9,.3,1.1), width .6s ease-out",
+                left: "58%",
+                top: "55%",
+                width: 90,
+                height: 90,
+                transform: "translate(-50%, -50%)",
+                background: "radial-gradient(circle, oklch(0.99 0.22 88 / 0.95), oklch(0.92 0.2 88 / 0.4) 40%, transparent 75%)",
+                filter: "blur(6px)",
+                mixBlendMode: "screen",
               }}
-            >
-              {/* Cone do feixe */}
-              <div
-                className="absolute left-0 top-1/2 beam-pulse"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  transform: "translateY(-50%)",
-                  background:
-                    "conic-gradient(from 80deg at 0% 50%, transparent 0deg, oklch(0.95 0.2 88 / 0.85) 6deg, oklch(0.88 0.18 78 / 0.45) 16deg, transparent 28deg)",
-                  filter: `blur(${beam.active ? 8 : 12}px)`,
-                  mixBlendMode: "screen",
-                  opacity: beam.active ? 1 : 0.75,
-                  transition: "opacity .3s ease, filter .3s ease",
-                }}
-              />
-              {/* Núcleo brilhante na origem */}
-              <div
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full"
-                style={{
-                  background: "radial-gradient(circle, oklch(0.98 0.22 88 / 1), transparent 65%)",
-                  filter: "blur(2px)",
-                  boxShadow: "0 0 30px oklch(0.95 0.22 88 / 0.9)",
-                }}
-              />
-              {/* Hotspot na ponta — onde o feixe "atinge" */}
-              <div
-                className="absolute top-1/2 -translate-y-1/2 rounded-full"
-                style={{
-                  right: "-4%",
-                  width: 36,
-                  height: 36,
-                  background: "radial-gradient(circle, oklch(0.95 0.2 88 / 0.85), transparent 70%)",
-                  filter: "blur(6px)",
-                  opacity: beam.active ? 0.9 : 0.4,
-                  transition: "opacity .3s ease",
-                }}
-              />
-              {/* Partículas de poeira no feixe */}
-              {[
-                { t: "30%", d: "0s",   s: 3 },
-                { t: "55%", d: "1.2s", s: 2 },
-                { t: "42%", d: "2.4s", s: 4 },
-                { t: "65%", d: ".6s",  s: 2 },
-                { t: "48%", d: "3.1s", s: 3 },
-              ].map((p, i) => (
-                <span
-                  key={i}
-                  className="dust absolute rounded-full"
-                  style={{
-                    left: "5%",
-                    top: p.t,
-                    width: p.s,
-                    height: p.s,
-                    background: "oklch(0.95 0.18 88 / 0.9)",
-                    boxShadow: "0 0 8px oklch(0.9 0.18 88 / 0.8)",
-                    animationDelay: p.d,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Dica de interação — some quando o usuário interage */}
-            {!beam.active && (
-              <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 z-20 rounded-full border border-primary/30 bg-background/80 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary animate-pulse">
-                Mexa o dedo no projetor ✨
-              </div>
-            )}
+            />
+            {/* Lens flare horizontal sutil */}
+            <div
+              className="pointer-events-none absolute z-0"
+              aria-hidden
+              style={{
+                left: "58%",
+                top: "55%",
+                width: `${260 * beam.length}px`,
+                height: 6,
+                transform: "translate(-50%, -50%)",
+                background: "linear-gradient(90deg, transparent, oklch(0.98 0.22 88 / 0.7), transparent)",
+                filter: "blur(3px)",
+                mixBlendMode: "screen",
+                opacity: beam.active ? 0.85 : 0.5,
+                transition: "width .5s ease-out, opacity .35s ease",
+              }}
+            />
 
             {/* PROJETOR — flutua suavemente */}
             <div className="projector-float relative">
@@ -427,16 +390,6 @@ function AdmSPP() {
               height={1024}
               className="mx-auto w-full max-w-sm product-glow"
             />
-              {/* LED da lente — piscando */}
-              <span
-                className="led-blink absolute h-2 w-2 rounded-full"
-                style={{
-                  left: "12%",
-                  top: "50%",
-                  background: "oklch(0.95 0.2 88)",
-                  boxShadow: "0 0 14px 4px oklch(0.9 0.2 88 / 0.9)",
-                }}
-              />
             </div>
 
             <div className="pointer-events-none absolute inset-0" aria-hidden>
