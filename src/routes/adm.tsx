@@ -480,6 +480,48 @@ function AdmSPP() {
         </div>
       </section>
 
+      {/* ALERTA DE DEMANDA */}
+      <section className="px-5 py-12">
+        <div className="mx-auto max-w-xl rounded-3xl border-2 border-primary bg-gradient-to-br from-primary/15 via-card to-card p-6" style={{ boxShadow: "var(--shadow-gold)" }}>
+          <div className="flex items-start gap-3">
+            <div className="rounded-lg p-2.5 shrink-0 animate-pulse" style={{ background: "var(--gradient-gold)" }}>
+              <AlertTriangle className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-widest text-primary">Aviso importante</p>
+              <h3 className="mt-1 text-xl font-black uppercase leading-tight">
+                Demanda absurda — limite de 300 unidades por dia
+              </h3>
+              <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
+                Por questões de logística, liberamos no máximo <span className="text-primary font-bold">300 ArenaBox Pro por dia</span>.
+                Quando o lote do dia acaba, a página é fechada e o próximo lote sai pelo preço cheio.
+              </p>
+              <p className="mt-3 text-sm font-bold">
+                <span className="text-primary">{soldToday}</span> de 300 já foram comprados hoje.
+              </p>
+              <div className="mt-3 h-2 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-1000"
+                  style={{
+                    width: `${Math.min(100, (soldToday / 300) * 100)}%`,
+                    background: "var(--gradient-gold)",
+                    boxShadow: "var(--shadow-gold)",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <a
+            {...ctaProps("alerta-demanda")}
+            className="mt-5 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+          >
+            <ShoppingCart className="h-4 w-4" /> Quero o meu antes que esgote
+          </a>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="px-5 py-14">
         <div className="mx-auto max-w-xl">
@@ -552,6 +594,29 @@ function AdmSPP() {
       </footer>
 
       {/* STICKY BOTTOM CTA */}
+      {/* TOAST DE COMPRA RECENTE */}
+      <div
+        aria-live="polite"
+        className={`fixed left-3 z-50 max-w-[300px] rounded-2xl border border-primary/40 bg-card/95 backdrop-blur p-3 pr-4 shadow-2xl transition-all duration-500 ${
+          toast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 84px)", boxShadow: "var(--shadow-gold)" }}
+      >
+        <div className="flex items-start gap-3">
+          <div className="rounded-full p-1.5 shrink-0" style={{ background: "var(--gradient-gold)" }}>
+            <ShoppingCart className="h-3.5 w-3.5 text-primary-foreground" />
+          </div>
+          <div className="text-[12px] leading-snug">
+            <p className="font-bold">
+              {toast?.name} <span className="text-muted-foreground font-normal">acabou de comprar</span>
+            </p>
+            <p className="text-muted-foreground">
+              {toast?.city} · há {toast?.minutes} min
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div
         className={`fixed bottom-0 inset-x-0 z-50 backdrop-blur-md bg-background/90 border-t border-primary/30 transition-transform duration-300 ${
           showSticky ? "translate-y-0" : "translate-y-full"
