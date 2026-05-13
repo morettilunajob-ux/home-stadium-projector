@@ -416,6 +416,24 @@ function AdmSPP() {
       {/* PROVA SOCIAL */}
       <section className="px-5 py-14 bg-card/50">
         <div className="mx-auto max-w-xl">
+          <div className="mb-8 grid grid-cols-3 gap-3">
+            <div className="rounded-2xl border-2 border-primary bg-card p-4 text-center" style={{ boxShadow: "var(--shadow-gold)" }}>
+              <Crown className="h-5 w-5 mx-auto text-primary" />
+              <p className="mt-1.5 text-2xl font-black tabular-nums">{soldToday}+</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">vendidos hoje</p>
+            </div>
+            <div className="rounded-2xl border border-primary/30 bg-card p-4 text-center">
+              <Star className="h-5 w-5 mx-auto text-primary fill-current" />
+              <p className="mt-1.5 text-2xl font-black">4.9</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">+12 mil avaliações</p>
+            </div>
+            <div className="rounded-2xl border border-primary/30 bg-card p-4 text-center">
+              <MapPin className="h-5 w-5 mx-auto text-primary" />
+              <p className="mt-1.5 text-2xl font-black">26</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">estados atendidos</p>
+            </div>
+          </div>
+
           <h2 className="text-center text-3xl font-black uppercase">
             Quem comprou <span className="text-primary">amou</span>
           </h2>
