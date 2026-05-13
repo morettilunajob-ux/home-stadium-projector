@@ -24,6 +24,8 @@ import {
   TrendingUp,
   Crown,
   AlertTriangle,
+  X,
+  PartyPopper,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -69,6 +71,10 @@ function AdmSPP() {
   const [soldToday, setSoldToday] = useState(287);
   // Toast de venda recente
   const [toast, setToast] = useState<{ name: string; city: string; minutes: number } | null>(null);
+  // Popup de bônus surpresa (dopamina) — aparece após 8s
+  const [showPopup, setShowPopup] = useState(false);
+  // Pequenas explosões de "confetti" no clique do CTA
+  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
@@ -114,6 +120,23 @@ function AdmSPP() {
     }, 9000);
     return () => clearInterval(id);
   }, []);
+
+  // Popup surpresa: aparece uma vez por sessão após 8s
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("arenabox_popup_shown")) return;
+    const id = window.setTimeout(() => {
+      setShowPopup(true);
+      sessionStorage.setItem("arenabox_popup_shown", "1");
+    }, 8000);
+    return () => clearTimeout(id);
+  }, []);
+
+  const fireBurst = (e: React.MouseEvent) => {
+    const id = Date.now();
+    setBursts((b) => [...b, { id, x: e.clientX, y: e.clientY }]);
+    window.setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1200);
+  };
 
   // Notificações de compra recente (rotativas)
   useEffect(() => {
