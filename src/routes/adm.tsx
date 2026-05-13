@@ -705,12 +705,12 @@ function AdmSPP() {
             <div className="mx-auto inline-flex rounded-full p-3 wiggle" style={{ background: "var(--gradient-gold)" }}>
               <PartyPopper className="h-7 w-7 text-primary-foreground" />
             </div>
-            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-primary">Bônus desbloqueado</p>
+            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-primary">Recompensa liberada</p>
             <h3 className="mt-1 text-2xl font-black uppercase leading-tight">
-              Frete <span className="text-primary">grátis</span> liberado
+              Você ganhou <span className="text-primary">acesso VIP</span> ao lote de hoje
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Válido apenas para os próximos <span className="text-primary font-bold">5 minutos</span>. Aproveite agora.
+              Vaga reservada por <span className="text-primary font-bold">5 minutos</span>. Depois disso ela volta para a fila.
             </p>
             <a
               {...ctaProps("popup-bonus")}
