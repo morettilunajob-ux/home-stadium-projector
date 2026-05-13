@@ -15,6 +15,13 @@ import {
   Star,
   Maximize,
   Wallet,
+  Clock,
+  Eye,
+  Gift,
+  TrendingDown,
+  Lock,
+  Truck,
+  RotateCcw,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -50,6 +57,13 @@ function ctaProps(source: string) {
 
 function AdmSPP() {
   const [showSticky, setShowSticky] = useState(false);
+  // Contagem regressiva persistente (15 min por sessão) — urgência elegante
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
+  // "Pessoas vendo agora" — variando levemente
+  const [viewers, setViewers] = useState(47);
+  // Estoque restante simulado (decai lentamente)
+  const [stock, setStock] = useState(12);
+
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -57,8 +71,52 @@ function AdmSPP() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const KEY = "arenabox_countdown_end";
+    let end = Number(localStorage.getItem(KEY));
+    if (!end || isNaN(end) || end < Date.now()) {
+      end = Date.now() + 15 * 60 * 1000;
+      localStorage.setItem(KEY, String(end));
+    }
+    const tick = () => {
+      const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+      setSecondsLeft(left);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setViewers((v) => Math.max(28, Math.min(72, v + (Math.random() > 0.5 ? 1 : -1) * Math.ceil(Math.random() * 3))));
+    }, 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setStock((s) => (s > 4 ? s - 1 : s));
+    }, 45000);
+    return () => clearInterval(id);
+  }, []);
+
+  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+  const ss = String(secondsLeft % 60).padStart(2, "0");
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden antialiased">
+      {/* TOP URGENCY BAR — countdown sempre visível */}
+      <div className="sticky top-0 z-40 text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
+        <div className="mx-auto max-w-xl px-4 py-2 flex items-center justify-center gap-2 text-[12px] sm:text-sm font-bold">
+          <Clock className="h-4 w-4 animate-pulse" />
+          <span className="uppercase tracking-wide">Oferta termina em</span>
+          <span className="tabular-nums font-black text-base bg-background/20 rounded-md px-2 py-0.5">
+            {mm}:{ss}
+          </span>
+        </div>
+      </div>
+
       {/* HERO */}
       <section className="relative isolate overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
         <div className="absolute inset-0 -z-10 opacity-50" aria-hidden>
@@ -93,28 +151,60 @@ function AdmSPP() {
               height={1024}
               className="mx-auto w-full max-w-sm product-glow animate-in fade-in zoom-in-95 duration-700"
             />
+            <div className="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-full bg-background/80 backdrop-blur border border-primary/30 px-2.5 py-1 text-[11px] font-semibold">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+              <Eye className="h-3 w-3" /> {viewers} pessoas vendo agora
+            </div>
           </div>
 
-          <div className="mt-6 flex flex-col items-center gap-1">
-            <p className="text-3xl font-black">12x disponíveis</p>
-            <p className="text-lg text-muted-foreground">
-              ou <span className="text-primary font-bold">R$297</span> à vista
+          {/* PREÇO ANCORADO */}
+          <div className="mt-8 mx-auto max-w-sm rounded-2xl border-2 border-primary/40 bg-card/80 backdrop-blur p-5" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <div className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-primary">
+              <TrendingDown className="h-4 w-4" /> Você economiza R$300
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground line-through">de R$597</p>
+            <p className="text-5xl font-black leading-none">
+              R$<span className="text-primary">297</span>
             </p>
-            <p className="text-xs text-muted-foreground">frete calculado no checkout</p>
+            <p className="mt-2 text-base">
+              ou <span className="font-black">12x</span> no cartão
+            </p>
+            <p className="mt-1 text-[11px] text-muted-foreground">frete calculado no checkout</p>
           </div>
 
           <a
             {...ctaProps("hero")}
-            className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98] animate-pulse-slow"
             style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-5 w-5" /> Quero meu ArenaBox Pro
           </a>
 
+          {/* MEDIDOR DE ESTOQUE */}
+          <div className="mt-5 mx-auto max-w-sm">
+            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
+              <span className="text-primary flex items-center gap-1"><Flame className="h-3 w-3" /> Últimas unidades</span>
+              <span className="text-foreground/80">apenas {stock} restantes</span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: `${Math.max(8, (stock / 50) * 100)}%`,
+                  background: "var(--gradient-gold)",
+                  boxShadow: "var(--shadow-gold)",
+                }}
+              />
+            </div>
+          </div>
+
           <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Compra segura</span>
-            <span className="flex items-center gap-1.5"><Package className="h-3.5 w-3.5" /> Envio nacional</span>
-            <span className="flex items-center gap-1.5"><Flame className="h-3.5 w-3.5" /> Estoque limitado</span>
+            <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> Pagamento 100% seguro</span>
+            <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Envio para todo Brasil</span>
+            <span className="flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> 7 dias de garantia</span>
           </div>
         </div>
       </section>
