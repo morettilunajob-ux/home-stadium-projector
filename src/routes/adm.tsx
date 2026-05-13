@@ -96,6 +96,8 @@ function AdmSPP() {
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
   // Offset do feixe relativo à lente (px) — segue o cursor
   const [beamOffset, setBeamOffset] = useState({ dx: 0, dy: 0, intensity: 0 });
+  // Posição absoluta do cursor relativa à imagem (px) — usada pelo feixe direcional
+  const [pointer, setPointer] = useState<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
   // Partículas de poeira dinâmicas
   const [dust, setDust] = useState<{ id: number; tx: number; ty: number; size: number; delay: number }[]>([]);
   const dustIdRef = useRef(0);
