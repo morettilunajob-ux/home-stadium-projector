@@ -86,6 +86,9 @@ function AdmSPP() {
   const [showMega, setShowMega] = useState(false);
   // Mini-celebração quando o contador "vendidos hoje" sobe (flash)
   const [pulseSold, setPulseSold] = useState(false);
+  // Feixe interativo — segue o cursor/toque
+  const stageRef = React.useRef<HTMLDivElement | null>(null);
+  const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
