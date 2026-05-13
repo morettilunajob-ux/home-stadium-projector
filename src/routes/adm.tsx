@@ -93,6 +93,36 @@ function AdmSPP() {
   // Feixe interativo — segue o cursor/toque
   const stageRef = useRef<HTMLDivElement | null>(null);
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
+  // Posição da lente (calibrável, salva em localStorage)
+  const DEFAULT_LENS = { x: 58, y: 55 };
+  const [lensPos, setLensPos] = useState(DEFAULT_LENS);
+  const [calibrating, setCalibrating] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  // Carrega posição salva + ativa modo calibração via ?calibrar=1
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem("arenabox_lens_pos");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed?.x === "number" && typeof parsed?.y === "number") {
+          setLensPos({ x: parsed.x, y: parsed.y });
+        }
+      }
+    } catch { /* ignore */ }
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("calibrar")) setCalibrating(true);
+  }, []);
+
+  const updateLensFromPointer = (clientX: number, clientY: number) => {
+    const el = stageRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
+    setLensPos({ x, y });
+  };
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
@@ -305,38 +335,46 @@ function AdmSPP() {
             ref={stageRef}
             className="relative mt-8 select-none touch-none"
             onMouseMove={(e) => {
+              if (calibrating && dragging) {
+                updateLensFromPointer(e.clientX, e.clientY);
+                return;
+              }
               const el = stageRef.current;
               if (!el) return;
               const r = el.getBoundingClientRect();
-              // Posição da LENTE de frente (≈ 58% do x, 55% do y do palco)
-              const lx = r.left + r.width * 0.58;
-              const ly = r.top + r.height * 0.55;
+              const lx = r.left + r.width * (lensPos.x / 100);
+              const ly = r.top + r.height * (lensPos.y / 100);
               const dist = Math.hypot(e.clientX - lx, e.clientY - ly);
               const intensity = Math.max(0.4, Math.min(1.6, 1 - dist / (r.width * 0.9) + 0.6));
               setBeam({ angle: 0, length: intensity, active: true });
             }}
-            onMouseLeave={() => setBeam((b) => ({ ...b, active: false, length: 1 }))}
+            onMouseLeave={() => { setBeam((b) => ({ ...b, active: false, length: 1 })); setDragging(false); }}
+            onMouseUp={() => setDragging(false)}
             onTouchMove={(e) => {
               const t = e.touches[0];
               if (!t) return;
+              if (calibrating && dragging) {
+                updateLensFromPointer(t.clientX, t.clientY);
+                return;
+              }
               const el = stageRef.current;
               if (!el) return;
               const r = el.getBoundingClientRect();
-              const lx = r.left + r.width * 0.58;
-              const ly = r.top + r.height * 0.55;
+              const lx = r.left + r.width * (lensPos.x / 100);
+              const ly = r.top + r.height * (lensPos.y / 100);
               const dist = Math.hypot(t.clientX - lx, t.clientY - ly);
               const intensity = Math.max(0.4, Math.min(1.6, 1 - dist / (r.width * 0.9) + 0.6));
               setBeam({ angle: 0, length: intensity, active: true });
             }}
-            onTouchEnd={() => setBeam((b) => ({ ...b, active: false, length: 1 }))}
+            onTouchEnd={() => { setBeam((b) => ({ ...b, active: false, length: 1 })); setDragging(false); }}
           >
             {/* HALO FRONTAL — luz amarelada saindo da lente em direção ao usuário */}
             <div
               className="pointer-events-none absolute z-0 beam-pulse"
               aria-hidden
               style={{
-                left: "58%",
-                top: "55%",
+                left: `${lensPos.x}%`,
+                top: `${lensPos.y}%`,
                 width: `${340 * beam.length}px`,
                 height: `${340 * beam.length}px`,
                 transform: "translate(-50%, -50%)",
@@ -353,8 +391,8 @@ function AdmSPP() {
               className="pointer-events-none absolute z-0"
               aria-hidden
               style={{
-                left: "58%",
-                top: "55%",
+                left: `${lensPos.x}%`,
+                top: `${lensPos.y}%`,
                 width: 90,
                 height: 90,
                 transform: "translate(-50%, -50%)",
@@ -368,8 +406,8 @@ function AdmSPP() {
               className="pointer-events-none absolute z-0"
               aria-hidden
               style={{
-                left: "58%",
-                top: "55%",
+                left: `${lensPos.x}%`,
+                top: `${lensPos.y}%`,
                 width: `${260 * beam.length}px`,
                 height: 6,
                 transform: "translate(-50%, -50%)",
@@ -380,6 +418,55 @@ function AdmSPP() {
                 transition: "width .5s ease-out, opacity .35s ease",
               }}
             />
+
+            {/* MODO CALIBRAÇÃO — alça arrastável + HUD */}
+            {calibrating && (
+              <>
+                <div
+                  role="button"
+                  aria-label="Arraste para posicionar a lente"
+                  className="absolute z-30 cursor-grab active:cursor-grabbing rounded-full border-2 border-dashed border-primary"
+                  style={{
+                    left: `${lensPos.x}%`,
+                    top: `${lensPos.y}%`,
+                    width: 90,
+                    height: 90,
+                    transform: "translate(-50%, -50%)",
+                    boxShadow: "0 0 0 2px oklch(0.16 0.04 155 / 0.6) inset, 0 0 24px oklch(0.82 0.17 88 / 0.6)",
+                    background: "oklch(0.82 0.17 88 / 0.08)",
+                  }}
+                  onMouseDown={(e) => { e.preventDefault(); setDragging(true); updateLensFromPointer(e.clientX, e.clientY); }}
+                  onTouchStart={(e) => { const t = e.touches[0]; if (t) { setDragging(true); updateLensFromPointer(t.clientX, t.clientY); } }}
+                >
+                  <div className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div className="absolute top-2 left-2 z-30 rounded-xl bg-background/95 backdrop-blur border border-primary/40 p-2 text-[11px] font-mono shadow-lg">
+                  <div className="font-bold uppercase tracking-wider text-primary text-[10px] mb-1">Calibrar lente</div>
+                  <div>x: {lensPos.x.toFixed(1)}% · y: {lensPos.y.toFixed(1)}%</div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <button
+                      onClick={() => {
+                        localStorage.setItem("arenabox_lens_pos", JSON.stringify(lensPos));
+                      }}
+                      className="rounded-md px-2 py-1 text-[10px] font-bold uppercase text-primary-foreground"
+                      style={{ background: "var(--gradient-gold)" }}
+                    >Salvar</button>
+                    <button
+                      onClick={() => {
+                        setLensPos(DEFAULT_LENS);
+                        localStorage.removeItem("arenabox_lens_pos");
+                      }}
+                      className="rounded-md px-2 py-1 text-[10px] font-bold uppercase border border-border"
+                    >Resetar</button>
+                    <button
+                      onClick={() => setCalibrating(false)}
+                      className="rounded-md px-2 py-1 text-[10px] font-bold uppercase border border-border"
+                    >Sair</button>
+                  </div>
+                  <div className="mt-1 text-[9px] text-muted-foreground">Arraste o círculo até a lente</div>
+                </div>
+              </>
+            )}
 
             {/* PROJETOR — flutua suavemente */}
             <div className="projector-float relative">
