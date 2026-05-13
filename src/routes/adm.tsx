@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import heroImg from "@/assets/projetor.png";
 import {
   Check,
@@ -87,7 +87,7 @@ function AdmSPP() {
   // Mini-celebração quando o contador "vendidos hoje" sobe (flash)
   const [pulseSold, setPulseSold] = useState(false);
   // Feixe interativo — segue o cursor/toque
-  const stageRef = React.useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
 
   useEffect(() => {
