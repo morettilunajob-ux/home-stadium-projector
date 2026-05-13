@@ -464,6 +464,49 @@ function AdmSPP() {
               />
 
               {/* NÚCLEO da lente — gradiente esférico premium */}
+              {/* FEIXE DIRECIONAL — sai da lente em direção ao cursor/dedo */}
+              <div
+                className="pointer-events-none absolute z-20"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: pointer.dist,
+                  height: 60 + beamOffset.intensity * 40,
+                  transform: `translateY(-50%) rotate(${(Math.atan2(pointer.dy, pointer.dx) * 180) / Math.PI}deg)`,
+                  transformOrigin: "0% 50%",
+                  background:
+                    "linear-gradient(90deg, oklch(0.97 0.2 88 / 0.55) 0%, oklch(0.95 0.18 78 / 0.35) 35%, oklch(0.9 0.16 75 / 0.18) 70%, transparent 100%)",
+                  WebkitMaskImage:
+                    "radial-gradient(ellipse 100% 50% at 0% 50%, #000 30%, transparent 100%)",
+                  maskImage:
+                    "radial-gradient(ellipse 100% 50% at 0% 50%, #000 30%, transparent 100%)",
+                  filter: "blur(8px)",
+                  opacity: pointer.active ? 0.55 + beamOffset.intensity * 0.35 : 0,
+                  transition: "opacity .3s ease, height .25s ease",
+                  willChange: "transform, width, opacity",
+                }}
+              />
+              {/* Linha central brilhante do feixe */}
+              <div
+                className="pointer-events-none absolute z-20 beam-shimmer"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: pointer.dist,
+                  height: 6,
+                  transform: `translateY(-50%) rotate(${(Math.atan2(pointer.dy, pointer.dx) * 180) / Math.PI}deg)`,
+                  transformOrigin: "0% 50%",
+                  background:
+                    "linear-gradient(90deg, oklch(1 0 0 / 0.85) 0%, oklch(0.98 0.2 88 / 0.55) 40%, transparent 100%)",
+                  filter: "blur(2px)",
+                  opacity: pointer.active ? 0.6 + beamOffset.intensity * 0.4 : 0,
+                  transition: "opacity .25s ease",
+                }}
+              />
+
+              {/* NÚCLEO da lente — gradiente esférico premium */}
               <div
                 className="pointer-events-none absolute z-20"
                 aria-hidden
