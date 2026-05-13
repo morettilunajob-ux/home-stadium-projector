@@ -263,7 +263,11 @@ function AdmSPP() {
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-primary px-3 py-1.5 text-xs font-black uppercase tracking-wider text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
               <TrendingUp className="h-3.5 w-3.5" />
-              <span className="tabular-nums">{soldToday}</span> vendidos hoje
+              <span className={`tabular-nums ${pulseSold ? "heartbeat" : ""}`}>{soldToday}</span> vendidos hoje
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary backdrop-blur">
+              <Bolt className="h-3.5 w-3.5" />
+              <span className="tabular-nums heartbeat">{last60}</span> compraram nos últimos 60s
             </div>
           </div>
 
@@ -388,7 +392,7 @@ function AdmSPP() {
           <a
             {...ctaProps("hero")}
             onClick={(e) => { fireBurst(e); ctaProps("hero").onClick(); }}
-            className="shimmer-cta pulse-ring gradient-pan mt-6 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            className="shimmer-cta pulse-ring gradient-pan breathe-glow mt-6 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
             style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-5 w-5" /> Quero meu ArenaBox Pro
@@ -853,21 +857,104 @@ function AdmSPP() {
           showSticky ? "translate-y-0" : "translate-y-full"
         }`}
       >
+        <div className="h-1 w-full overflow-hidden bg-muted">
+          <div
+            className="h-full transition-all duration-1000"
+            style={{
+              width: `${(secondsLeft / (15 * 60)) * 100}%`,
+              background: "var(--gradient-gold)",
+            }}
+          />
+        </div>
         <div className="mx-auto max-w-xl px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex flex-col leading-tight">
-            <span className="font-black text-sm uppercase">ArenaBox Pro</span>
-            <span className="text-[11px] text-muted-foreground">12x ou R$297 à vista</span>
+            <span className="font-black text-sm uppercase flex items-center gap-1.5">
+              ArenaBox Pro
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+            </span>
+            <span className="text-[11px] text-muted-foreground tabular-nums">
+              ⏱ termina em <span className="text-primary font-bold">{mm}:{ss}</span>
+            </span>
           </div>
           <a
             {...ctaProps("sticky-bottom")}
             onClick={(e) => { fireBurst(e); ctaProps("sticky-bottom").onClick(); }}
-            className="shimmer-cta gradient-pan relative inline-flex flex-1 max-w-[60%] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black uppercase text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            className="shimmer-cta gradient-pan breathe-glow relative inline-flex flex-1 max-w-[60%] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black uppercase text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
             style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-4 w-4" /> Comprar agora
           </a>
         </div>
       </div>
+
+      {/* REAÇÕES FLUTUANTES — emojis subindo na lateral esquerda */}
+      <div className="pointer-events-none fixed inset-y-0 left-0 z-40 w-24 overflow-hidden" aria-hidden>
+        {reactions.map((r) => (
+          <span
+            key={r.id}
+            className="float-up absolute bottom-24 text-2xl select-none"
+            style={{ left: `${r.left}%`, filter: "drop-shadow(0 4px 10px rgba(0,0,0,.35))" }}
+          >
+            {r.emoji}
+          </span>
+        ))}
+      </div>
+
+      {/* MEGA POPUP — exit intent / 25s */}
+      {showMega && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="pop-in relative w-full max-w-md rounded-3xl border-2 border-primary bg-card p-6 text-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <button
+              onClick={() => setShowMega(false)}
+              aria-label="Fechar"
+              className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="mx-auto inline-flex rounded-full p-3 wiggle" style={{ background: "var(--gradient-gold)" }}>
+              <BadgePercent className="h-7 w-7 text-primary-foreground" />
+            </div>
+            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-primary">Última chance hoje</p>
+            <h3 className="mt-1 text-2xl font-black uppercase leading-tight">
+              Espera! Você quase perdeu o <span className="text-primary">lote do dia</span>
+            </h3>
+            <p className="mt-3 text-sm text-foreground/85">
+              Liberamos uma vaga reservada só pra você. Termina em <span className="text-primary font-bold tabular-nums heartbeat inline-block">{mm}:{ss}</span>.
+            </p>
+            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <Users className="h-4 w-4 text-primary" />
+              <span><span className="text-foreground font-bold tabular-nums">{viewers}</span> pessoas estão olhando isso agora</span>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-primary/40 bg-background p-4">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Seu preço destravado</p>
+              <p className="mt-1 text-sm text-muted-foreground line-through">R$597</p>
+              <p className="text-5xl font-black leading-none">
+                R$<span className="text-primary">297</span>
+              </p>
+              <p className="mt-1 text-xs">+ R$447 em bônus inclusos</p>
+            </div>
+
+            <a
+              {...ctaProps("mega-popup")}
+              onClick={(e) => { fireBurst(e); ctaProps("mega-popup").onClick(); setShowMega(false); }}
+              className="shimmer-cta gradient-pan breathe-glow mt-5 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+              style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            >
+              <ShoppingCart className="h-4 w-4" /> Sim, quero garantir agora
+            </a>
+            <button
+              onClick={() => setShowMega(false)}
+              className="mt-3 text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
+            >
+              Não, vou pagar R$597 depois
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
