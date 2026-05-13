@@ -301,12 +301,66 @@ function AdmSPP() {
         </div>
       </section>
 
+      {/* BÔNUS EXCLUSIVOS — stack de valor */}
+      <section className="px-5 py-14 bg-card/50">
+        <div className="mx-auto max-w-xl">
+          <div className="text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+              <Gift className="h-3.5 w-3.5" /> Bônus exclusivos hoje
+            </span>
+            <h2 className="mt-5 text-3xl font-black uppercase leading-tight">
+              Leve <span className="text-primary">R$447 em bônus</span>
+              <br />
+              comprando agora
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Inclusos automaticamente — sem custo extra. Apenas para os pedidos de hoje.
+            </p>
+          </div>
+
+          <div className="mt-8 space-y-3">
+            {[
+              { title: "Suporte ajustável de mesa", value: "R$97" },
+              { title: "Cabo HDMI premium 1,5m", value: "R$67" },
+              { title: "Guia: melhores filmes para o telão", value: "R$47" },
+              { title: "Garantia estendida 30 dias", value: "R$236" },
+            ].map((b, i) => (
+              <div key={i} className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-background p-4">
+                <div className="rounded-lg p-2 shrink-0" style={{ background: "var(--gradient-gold)" }}>
+                  <Gift className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <p className="flex-1 text-sm font-semibold">{b.title}</p>
+                <span className="text-sm font-black text-primary line-through opacity-70">{b.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 rounded-2xl border-2 border-primary bg-card p-5 text-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Valor total</p>
+            <p className="mt-1 text-xl text-muted-foreground line-through">R$1.044</p>
+            <p className="mt-1 text-[11px] uppercase tracking-widest text-primary font-bold">Hoje você leva por</p>
+            <p className="text-5xl font-black leading-none mt-1">
+              R$<span className="text-primary">297</span>
+            </p>
+            <p className="mt-2 text-sm text-foreground/80">ou 12x no cartão</p>
+
+            <a
+              {...ctaProps("bonus-stack")}
+              className="mt-5 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            >
+              <ShoppingCart className="h-4 w-4" /> Quero garantir os bônus
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* URGÊNCIA */}
       <div
         className="px-5 py-4 text-center text-sm font-bold text-primary-foreground"
         style={{ background: "var(--gradient-gold)" }}
       >
-        ⚠️ Oferta especial ativa hoje enquanto durar estoque
+        ⚠️ Apenas {stock} unidades restantes neste lote promocional
       </div>
 
       {/* PROVA SOCIAL */}
@@ -332,6 +386,28 @@ function AdmSPP() {
                 <p className="mt-1.5 text-xs text-muted-foreground">— {name}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GARANTIA RISCO ZERO */}
+      <section className="px-5 py-14 bg-card/50">
+        <div className="mx-auto max-w-xl rounded-3xl border-2 border-primary/40 bg-card p-6 text-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+          <div className="mx-auto inline-flex rounded-full p-3" style={{ background: "var(--gradient-gold)" }}>
+            <ShieldCheck className="h-7 w-7 text-primary-foreground" />
+          </div>
+          <h2 className="mt-4 text-2xl sm:text-3xl font-black uppercase">
+            Garantia de <span className="text-primary">risco zero</span>
+          </h2>
+          <p className="mt-3 text-sm text-foreground/90">
+            Teste por <strong>7 dias</strong> sem compromisso. Se não amar,
+            devolvemos <span className="text-primary font-bold">100% do seu dinheiro</span>.
+            Sem perguntas. Sem burocracia. O risco é todo nosso.
+          </p>
+          <div className="mt-5 grid grid-cols-3 gap-2 text-[11px] font-bold uppercase tracking-wider">
+            <div className="rounded-lg bg-background p-3"><RotateCcw className="h-4 w-4 mx-auto text-primary" /><span className="block mt-1.5">7 dias para testar</span></div>
+            <div className="rounded-lg bg-background p-3"><Lock className="h-4 w-4 mx-auto text-primary" /><span className="block mt-1.5">Pagamento seguro</span></div>
+            <div className="rounded-lg bg-background p-3"><Truck className="h-4 w-4 mx-auto text-primary" /><span className="block mt-1.5">Envio nacional</span></div>
           </div>
         </div>
       </section>
@@ -368,18 +444,25 @@ function AdmSPP() {
       <section className="relative overflow-hidden px-5 py-20" style={{ background: "var(--gradient-hero)" }}>
         <div className="absolute inset-0 -z-10 opacity-25" aria-hidden style={{ background: "var(--gradient-gold)" }} />
         <div className="mx-auto max-w-xl text-center">
-          <Users className="mx-auto h-10 w-10 text-primary" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+            <Clock className="h-3.5 w-3.5" /> Oferta termina em {mm}:{ss}
+          </div>
           <h2 className="mt-5 text-3xl sm:text-4xl font-black uppercase leading-tight">
-            Seu próximo jogo merece <span className="text-primary">tela gigante</span>
+            Hoje você decide:<br />
+            <span className="text-primary">tela gigante</span> ou continuar olhando pra TV pequena?
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Garanta agora antes que o lote promocional acabe.
+            Quando essa página voltar, o preço volta pra <span className="line-through">R$597</span>.
+            Quem aproveitou hoje, pagou só <span className="text-primary font-bold">R$297</span> + R$447 em bônus.
           </p>
 
-          <div className="mt-6 flex flex-col items-center gap-1">
-            <p className="text-2xl font-black">12x disponíveis</p>
-            <p className="text-base text-muted-foreground">
-              ou <span className="text-primary font-bold">R$297</span> à vista
+          <div className="mt-6 flex flex-col items-center gap-0.5">
+            <p className="text-sm text-muted-foreground line-through">de R$597</p>
+            <p className="text-5xl font-black leading-none">
+              R$<span className="text-primary">297</span>
+            </p>
+            <p className="mt-1 text-base">
+              ou <span className="font-black">12x</span> no cartão
             </p>
           </div>
 
@@ -391,7 +474,7 @@ function AdmSPP() {
             <ShoppingCart className="h-5 w-5" /> Garantir o meu agora
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
-            Compra segura • Envio nacional • Estoque promocional limitado
+            Pagamento 100% seguro • Garantia de 7 dias • Envio para todo Brasil
           </p>
         </div>
       </section>
