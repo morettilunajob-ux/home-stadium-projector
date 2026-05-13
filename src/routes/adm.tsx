@@ -9,7 +9,6 @@ import {
   Zap,
   Tv,
   Film,
-  Users,
   Sparkles,
   ShoppingCart,
   Star,
