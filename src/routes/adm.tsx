@@ -29,6 +29,10 @@ import {
   Bolt,
   BadgePercent,
   Users,
+  Package,
+  Cable,
+  Cpu,
+  Volume2,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
