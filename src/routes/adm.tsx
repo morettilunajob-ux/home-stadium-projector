@@ -223,6 +223,21 @@ function AdmSPP() {
               height={1024}
               className="mx-auto w-full max-w-sm product-glow animate-in fade-in zoom-in-95 duration-700"
             />
+            <div className="pointer-events-none absolute inset-0" aria-hidden>
+              {[
+                { l: "12%", t: "70%", d: "0s" },
+                { l: "78%", t: "62%", d: ".7s" },
+                { l: "30%", t: "82%", d: "1.4s" },
+                { l: "62%", t: "78%", d: "2.1s" },
+                { l: "48%", t: "68%", d: ".3s" },
+              ].map((s, i) => (
+                <Sparkles
+                  key={i}
+                  className="spark absolute h-4 w-4 text-primary"
+                  style={{ left: s.l, top: s.t, animationDelay: s.d }}
+                />
+              ))}
+            </div>
             <div className="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-full bg-background/80 backdrop-blur border border-primary/30 px-2.5 py-1 text-[11px] font-semibold">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
@@ -249,8 +264,9 @@ function AdmSPP() {
 
           <a
             {...ctaProps("hero")}
-            className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98] animate-pulse-slow"
-            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            onClick={(e) => { fireBurst(e); ctaProps("hero").onClick(); }}
+            className="shimmer-cta pulse-ring gradient-pan mt-6 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-5 w-5" /> Quero meu ArenaBox Pro
           </a>
