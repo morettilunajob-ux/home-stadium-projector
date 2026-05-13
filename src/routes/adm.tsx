@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Zap,
   Tv,
+  Film,
   Sparkles,
   ShoppingCart,
   Star,
