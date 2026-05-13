@@ -355,7 +355,6 @@ function AdmSPP() {
             <p className="mt-2 text-base">
               ou <span className="font-black">12x</span> no cartão
             </p>
-            <p className="mt-1 text-[11px] text-muted-foreground">frete calculado no checkout</p>
           </div>
 
           <a
