@@ -241,4 +241,34 @@
     70%,90%     { opacity: .35; }
   }
   .led-blink { animation: led-blink 3s ease-in-out infinite; }
+
+  /* Tela projetada — flicker de "filme" */
+  @keyframes screen-flicker {
+    0%   { filter: brightness(1) hue-rotate(0deg); }
+    25%  { filter: brightness(1.15) hue-rotate(20deg); }
+    50%  { filter: brightness(.92) hue-rotate(-15deg); }
+    75%  { filter: brightness(1.2) hue-rotate(35deg); }
+    100% { filter: brightness(1) hue-rotate(0deg); }
+  }
+  .screen-flicker { animation: screen-flicker 1.6s steps(8) infinite; }
+
+  @keyframes scene-pan {
+    0%,100% { background-position: 0% 50%; }
+    50%     { background-position: 100% 50%; }
+  }
+  .scene-pan { background-size: 300% 300%; animation: scene-pan 6s ease-in-out infinite; }
+
+  /* Linhas de scanline sutis */
+  @keyframes scanlines {
+    from { background-position: 0 0; }
+    to   { background-position: 0 8px; }
+  }
+  .scanlines::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 4px);
+    animation: scanlines 1s linear infinite;
+    pointer-events: none;
+    border-radius: inherit;
+  }
 }
