@@ -292,4 +292,11 @@
     50%     { opacity: .9;  transform: translate(-50%, -50%) scaleX(1.08); }
   }
   .flare-shimmer { animation: flare-shimmer 3.2s ease-in-out infinite; }
+
+  /* Pulso sutil no feixe direcional que segue o cursor */
+  @keyframes beam-shimmer {
+    0%,100% { filter: blur(2px) brightness(1); }
+    50%     { filter: blur(2.5px) brightness(1.25); }
+  }
+  .beam-shimmer { animation: beam-shimmer 1.6s ease-in-out infinite; }
 }

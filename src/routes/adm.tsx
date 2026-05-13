@@ -96,6 +96,8 @@ function AdmSPP() {
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
   // Offset do feixe relativo à lente (px) — segue o cursor
   const [beamOffset, setBeamOffset] = useState({ dx: 0, dy: 0, intensity: 0 });
+  // Vetor cursor→lente em px, usado pelo feixe direcional
+  const [pointer, setPointer] = useState<{ dx: number; dy: number; dist: number; active: boolean }>({ dx: 0, dy: 0, dist: 0, active: false });
   // Partículas de poeira dinâmicas
   const [dust, setDust] = useState<{ id: number; tx: number; ty: number; size: number; delay: number }[]>([]);
   const dustIdRef = useRef(0);
@@ -147,6 +149,8 @@ function AdmSPP() {
     const k = Math.min(1, max / Math.max(1, dist));
     setBeamOffset({ dx: dx * k * 0.6, dy: dy * k * 0.6, intensity });
     setBeam({ angle: 0, length: 0.8 + intensity * 0.9, active: true });
+    // Posição do cursor relativa à imagem (em %), para o feixe direcional
+    setPointer({ dx, dy, dist, active: true });
 
     // Spawn de poeira em direção ao cursor — mais quanto mais perto
     if (Math.random() < 0.35 + intensity * 0.55) {
@@ -165,6 +169,7 @@ function AdmSPP() {
   const releasePointer = () => {
     setBeam((b) => ({ ...b, active: false, length: 1 }));
     setBeamOffset({ dx: 0, dy: 0, intensity: 0 });
+    setPointer((p) => ({ ...p, active: false }));
     setDragging(false);
   };
 
@@ -455,6 +460,48 @@ function AdmSPP() {
                   filter: "blur(4px)",
                   opacity: 0.5 + beamOffset.intensity * 0.5,
                   transition: "left .35s ease-out, top .35s ease-out",
+                }}
+              />
+
+              {/* FEIXE DIRECIONAL — sai da lente em direção ao cursor/dedo */}
+              <div
+                className="pointer-events-none absolute z-20"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: pointer.dist,
+                  height: 60 + beamOffset.intensity * 40,
+                  transform: `translateY(-50%) rotate(${(Math.atan2(pointer.dy, pointer.dx) * 180) / Math.PI}deg)`,
+                  transformOrigin: "0% 50%",
+                  background:
+                    "linear-gradient(90deg, oklch(0.97 0.2 88 / 0.55) 0%, oklch(0.95 0.18 78 / 0.35) 35%, oklch(0.9 0.16 75 / 0.18) 70%, transparent 100%)",
+                  WebkitMaskImage:
+                    "radial-gradient(ellipse 100% 50% at 0% 50%, #000 30%, transparent 100%)",
+                  maskImage:
+                    "radial-gradient(ellipse 100% 50% at 0% 50%, #000 30%, transparent 100%)",
+                  filter: "blur(8px)",
+                  opacity: pointer.active ? 0.55 + beamOffset.intensity * 0.35 : 0,
+                  transition: "opacity .3s ease, height .25s ease",
+                  willChange: "transform, width, opacity",
+                }}
+              />
+              {/* Linha central brilhante do feixe */}
+              <div
+                className="pointer-events-none absolute z-20 beam-shimmer"
+                aria-hidden
+                style={{
+                  left: `${lensPos.x}%`,
+                  top: `${lensPos.y}%`,
+                  width: pointer.dist,
+                  height: 6,
+                  transform: `translateY(-50%) rotate(${(Math.atan2(pointer.dy, pointer.dx) * 180) / Math.PI}deg)`,
+                  transformOrigin: "0% 50%",
+                  background:
+                    "linear-gradient(90deg, oklch(1 0 0 / 0.85) 0%, oklch(0.98 0.2 88 / 0.55) 40%, transparent 100%)",
+                  filter: "blur(2px)",
+                  opacity: pointer.active ? 0.6 + beamOffset.intensity * 0.4 : 0,
+                  transition: "opacity .25s ease",
                 }}
               />
 
