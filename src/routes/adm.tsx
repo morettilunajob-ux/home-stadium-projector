@@ -463,7 +463,6 @@ function AdmSPP() {
                 }}
               />
 
-              {/* NÚCLEO da lente — gradiente esférico premium */}
               {/* FEIXE DIRECIONAL — sai da lente em direção ao cursor/dedo */}
               <div
                 className="pointer-events-none absolute z-20"
