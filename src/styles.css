@@ -241,4 +241,40 @@
     70%,90%     { opacity: .35; }
   }
   .led-blink { animation: led-blink 3s ease-in-out infinite; }
+
+  /* Heartbeat — números críticos pulsam como coração */
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    15%     { transform: scale(1.18); }
+    30%     { transform: scale(0.96); }
+    45%     { transform: scale(1.12); }
+    60%     { transform: scale(1); }
+  }
+  .heartbeat { animation: heartbeat 1.4s ease-in-out infinite; transform-origin: center; }
+
+  /* Reações flutuantes (emojis subindo) */
+  @keyframes float-up {
+    0%   { transform: translateY(0) scale(.7); opacity: 0; }
+    15%  { opacity: 1; }
+    100% { transform: translateY(-160px) scale(1.1); opacity: 0; }
+  }
+  .float-up { animation: float-up 3.6s ease-out forwards; }
+
+  /* Slide-up entrada premium */
+  @keyframes slide-up-fade {
+    0%   { transform: translateY(40px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  .slide-up-fade { animation: slide-up-fade .55s cubic-bezier(.2,.9,.3,1.1) both; }
+
+  /* Glow respirando — atrai o olho para o CTA */
+  @keyframes breathe-glow {
+    0%,100% { box-shadow: 0 0 0 0 oklch(0.82 0.17 88 / 0), 0 10px 40px -10px oklch(0.82 0.17 88 / 0.5); }
+    50%     { box-shadow: 0 0 30px 8px oklch(0.82 0.17 88 / 0.55), 0 18px 50px -8px oklch(0.82 0.17 88 / 0.7); }
+  }
+  .breathe-glow { animation: breathe-glow 2.4s ease-in-out infinite; }
+
+  /* Tilt sutil que segue mouse — usado em hover */
+  .tilt-hover { transition: transform .35s cubic-bezier(.2,.9,.3,1.2); }
+  .tilt-hover:hover { transform: translateY(-3px) rotate(-.6deg) scale(1.015); }
 }
