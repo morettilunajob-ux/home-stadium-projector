@@ -92,9 +92,16 @@ function AdmSPP() {
   const [pulseSold, setPulseSold] = useState(false);
   // Feixe interativo — segue o cursor/toque
   const stageRef = useRef<HTMLDivElement | null>(null);
+  const imageRef = useRef<HTMLDivElement | null>(null);
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
+  // Offset do feixe relativo à lente (px) — segue o cursor
+  const [beamOffset, setBeamOffset] = useState({ dx: 0, dy: 0, intensity: 0 });
+  // Partículas de poeira dinâmicas
+  const [dust, setDust] = useState<{ id: number; tx: number; ty: number; size: number; delay: number }[]>([]);
+  const dustIdRef = useRef(0);
   // Posição da lente (calibrável, salva em localStorage)
-  const DEFAULT_LENS = { x: 58, y: 55 };
+  // Coordenadas em % DO IMAGEM (não do palco) — auto-calibra em qualquer tela
+  const DEFAULT_LENS = { x: 60, y: 55 };
   const [lensPos, setLensPos] = useState(DEFAULT_LENS);
   const [calibrating, setCalibrating] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -116,12 +123,49 @@ function AdmSPP() {
   }, []);
 
   const updateLensFromPointer = (clientX: number, clientY: number) => {
-    const el = stageRef.current;
+    const el = imageRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
     const y = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
     setLensPos({ x, y });
+  };
+
+  // Tracker do cursor — calcula offset/intensidade + spawna poeira
+  const trackPointer = (clientX: number, clientY: number) => {
+    const img = imageRef.current;
+    if (!img) return;
+    const r = img.getBoundingClientRect();
+    const lx = r.left + r.width * (lensPos.x / 100);
+    const ly = r.top + r.height * (lensPos.y / 100);
+    const dx = clientX - lx;
+    const dy = clientY - ly;
+    const dist = Math.hypot(dx, dy);
+    const intensity = Math.max(0, Math.min(1, 1 - dist / (r.width * 1.2)));
+    // Limita o quanto o feixe se desloca em px
+    const max = r.width * 0.35;
+    const k = Math.min(1, max / Math.max(1, dist));
+    setBeamOffset({ dx: dx * k * 0.6, dy: dy * k * 0.6, intensity });
+    setBeam({ angle: 0, length: 0.8 + intensity * 0.9, active: true });
+
+    // Spawn de poeira em direção ao cursor — mais quanto mais perto
+    if (Math.random() < 0.35 + intensity * 0.55) {
+      const id = ++dustIdRef.current;
+      const ang = Math.atan2(dy, dx);
+      const spread = (Math.random() - 0.5) * 0.7;
+      const reach = 60 + Math.random() * 90 + intensity * 80;
+      const tx = Math.cos(ang + spread) * reach;
+      const ty = Math.sin(ang + spread) * reach;
+      const p = { id, tx, ty, size: 1 + Math.random() * 3, delay: Math.random() * 0.15 };
+      setDust((arr) => [...arr.slice(-30), p]);
+      window.setTimeout(() => setDust((arr) => arr.filter((d) => d.id !== id)), 1700);
+    }
+  };
+
+  const releasePointer = () => {
+    setBeam((b) => ({ ...b, active: false, length: 1 }));
+    setBeamOffset({ dx: 0, dy: 0, intensity: 0 });
+    setDragging(false);
   };
 
   useEffect(() => {
