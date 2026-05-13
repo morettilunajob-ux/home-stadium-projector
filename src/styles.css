@@ -212,4 +212,33 @@
     75% { transform: rotate(6deg); }
   }
   .wiggle { animation: wiggle 1.6s ease-in-out infinite; }
+
+  /* Projetor flutua e balança levemente — vivo */
+  @keyframes projector-float {
+    0%,100% { transform: translateY(0) rotate(-1.2deg); }
+    50%     { transform: translateY(-10px) rotate(1.2deg); }
+  }
+  .projector-float { animation: projector-float 5.5s ease-in-out infinite; transform-origin: center; }
+
+  /* Feixe de luz da lente — pulsa de intensidade e largura */
+  @keyframes beam-pulse {
+    0%,100% { opacity: .55; filter: blur(14px); transform: translate(-2%, -50%) scaleX(1) scaleY(1); }
+    50%     { opacity: .9;  filter: blur(10px); transform: translate(-2%, -50%) scaleX(1.05) scaleY(1.08); }
+  }
+  .beam-pulse { animation: beam-pulse 2.6s ease-in-out infinite; }
+
+  /* Partículas de poeira no feixe */
+  @keyframes dust-drift {
+    0%   { transform: translate(0,0); opacity: 0; }
+    20%  { opacity: 1; }
+    100% { transform: translate(120px, -30px); opacity: 0; }
+  }
+  .dust { animation: dust-drift 4s linear infinite; }
+
+  /* LED piscando da lente */
+  @keyframes led-blink {
+    0%,60%,100% { opacity: 1; }
+    70%,90%     { opacity: .35; }
+  }
+  .led-blink { animation: led-blink 3s ease-in-out infinite; }
 }

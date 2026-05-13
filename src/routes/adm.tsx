@@ -216,13 +216,72 @@ function AdmSPP() {
           </p>
 
           <div className="relative mt-8">
+            {/* FEIXE DE LUZ — sai da lente do projetor */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 -z-0" aria-hidden style={{ width: "120%", height: "70%", transform: "translate(-12%, -50%)" }}>
+              <div
+                className="beam-pulse absolute left-0 top-1/2"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background:
+                    "conic-gradient(from 75deg at 0% 50%, transparent 0deg, oklch(0.92 0.18 88 / 0.65) 8deg, oklch(0.85 0.18 78 / 0.35) 18deg, transparent 30deg)",
+                  filter: "blur(12px)",
+                  mixBlendMode: "screen",
+                }}
+              />
+              {/* Hotspot dentro do feixe */}
+              <div
+                className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full"
+                style={{
+                  background: "radial-gradient(circle, oklch(0.95 0.2 88 / 0.95), transparent 65%)",
+                  filter: "blur(2px)",
+                }}
+              />
+              {/* Partículas de poeira no feixe */}
+              {[
+                { t: "30%", d: "0s",   s: 3 },
+                { t: "55%", d: "1.2s", s: 2 },
+                { t: "42%", d: "2.4s", s: 4 },
+                { t: "65%", d: ".6s",  s: 2 },
+                { t: "48%", d: "3.1s", s: 3 },
+              ].map((p, i) => (
+                <span
+                  key={i}
+                  className="dust absolute rounded-full"
+                  style={{
+                    left: "5%",
+                    top: p.t,
+                    width: p.s,
+                    height: p.s,
+                    background: "oklch(0.95 0.18 88 / 0.9)",
+                    boxShadow: "0 0 8px oklch(0.9 0.18 88 / 0.8)",
+                    animationDelay: p.d,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* PROJETOR — flutua suavemente */}
+            <div className="projector-float relative">
             <img
               src={heroImg}
               alt="ArenaBox Pro — mini projetor portátil"
               width={1024}
               height={1024}
-              className="mx-auto w-full max-w-sm product-glow animate-in fade-in zoom-in-95 duration-700"
+              className="mx-auto w-full max-w-sm product-glow"
             />
+              {/* LED da lente — piscando */}
+              <span
+                className="led-blink absolute h-2 w-2 rounded-full"
+                style={{
+                  left: "12%",
+                  top: "50%",
+                  background: "oklch(0.95 0.2 88)",
+                  boxShadow: "0 0 14px 4px oklch(0.9 0.2 88 / 0.9)",
+                }}
+              />
+            </div>
+
             <div className="pointer-events-none absolute inset-0" aria-hidden>
               {[
                 { l: "12%", t: "70%", d: "0s" },
@@ -646,12 +705,12 @@ function AdmSPP() {
             <div className="mx-auto inline-flex rounded-full p-3 wiggle" style={{ background: "var(--gradient-gold)" }}>
               <PartyPopper className="h-7 w-7 text-primary-foreground" />
             </div>
-            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-primary">Bônus desbloqueado</p>
+            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-primary">Recompensa liberada</p>
             <h3 className="mt-1 text-2xl font-black uppercase leading-tight">
-              Frete <span className="text-primary">grátis</span> liberado
+              Você ganhou <span className="text-primary">acesso VIP</span> ao lote de hoje
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Válido apenas para os próximos <span className="text-primary font-bold">5 minutos</span>. Aproveite agora.
+              Vaga reservada por <span className="text-primary font-bold">5 minutos</span>. Depois disso ela volta para a fila.
             </p>
             <a
               {...ctaProps("popup-bonus")}
