@@ -24,6 +24,8 @@ import {
   TrendingUp,
   Crown,
   AlertTriangle,
+  X,
+  PartyPopper,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -69,6 +71,10 @@ function AdmSPP() {
   const [soldToday, setSoldToday] = useState(287);
   // Toast de venda recente
   const [toast, setToast] = useState<{ name: string; city: string; minutes: number } | null>(null);
+  // Popup de bônus surpresa (dopamina) — aparece após 8s
+  const [showPopup, setShowPopup] = useState(false);
+  // Pequenas explosões de "confetti" no clique do CTA
+  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
@@ -114,6 +120,23 @@ function AdmSPP() {
     }, 9000);
     return () => clearInterval(id);
   }, []);
+
+  // Popup surpresa: aparece uma vez por sessão após 8s
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("arenabox_popup_shown")) return;
+    const id = window.setTimeout(() => {
+      setShowPopup(true);
+      sessionStorage.setItem("arenabox_popup_shown", "1");
+    }, 8000);
+    return () => clearTimeout(id);
+  }, []);
+
+  const fireBurst = (e: React.MouseEvent) => {
+    const id = Date.now();
+    setBursts((b) => [...b, { id, x: e.clientX, y: e.clientY }]);
+    window.setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1200);
+  };
 
   // Notificações de compra recente (rotativas)
   useEffect(() => {
@@ -200,6 +223,21 @@ function AdmSPP() {
               height={1024}
               className="mx-auto w-full max-w-sm product-glow animate-in fade-in zoom-in-95 duration-700"
             />
+            <div className="pointer-events-none absolute inset-0" aria-hidden>
+              {[
+                { l: "12%", t: "70%", d: "0s" },
+                { l: "78%", t: "62%", d: ".7s" },
+                { l: "30%", t: "82%", d: "1.4s" },
+                { l: "62%", t: "78%", d: "2.1s" },
+                { l: "48%", t: "68%", d: ".3s" },
+              ].map((s, i) => (
+                <Sparkles
+                  key={i}
+                  className="spark absolute h-4 w-4 text-primary"
+                  style={{ left: s.l, top: s.t, animationDelay: s.d }}
+                />
+              ))}
+            </div>
             <div className="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-full bg-background/80 backdrop-blur border border-primary/30 px-2.5 py-1 text-[11px] font-semibold">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
@@ -226,8 +264,9 @@ function AdmSPP() {
 
           <a
             {...ctaProps("hero")}
-            className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98] animate-pulse-slow"
-            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            onClick={(e) => { fireBurst(e); ctaProps("hero").onClick(); }}
+            className="shimmer-cta pulse-ring gradient-pan mt-6 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-5 w-5" /> Quero meu ArenaBox Pro
           </a>
@@ -577,8 +616,9 @@ function AdmSPP() {
 
           <a
             {...ctaProps("final-cta")}
-            className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
-            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            onClick={(e) => { fireBurst(e); ctaProps("final-cta").onClick(); }}
+            className="shimmer-cta pulse-ring gradient-pan mt-6 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-5 w-5" /> Garantir o meu agora
           </a>
@@ -591,6 +631,75 @@ function AdmSPP() {
       <footer className="py-8 px-5 pb-28 text-center text-xs text-muted-foreground border-t border-border">
         © {new Date().getFullYear()} ArenaBox Pro. Todos os direitos reservados.
       </footer>
+
+      {/* POPUP DE BÔNUS SURPRESA */}
+      {showPopup && (
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-background/70 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="pop-in relative w-full max-w-sm rounded-3xl border-2 border-primary bg-card p-6 text-center" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <button
+              onClick={() => setShowPopup(false)}
+              aria-label="Fechar"
+              className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="mx-auto inline-flex rounded-full p-3 wiggle" style={{ background: "var(--gradient-gold)" }}>
+              <PartyPopper className="h-7 w-7 text-primary-foreground" />
+            </div>
+            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-primary">Bônus desbloqueado</p>
+            <h3 className="mt-1 text-2xl font-black uppercase leading-tight">
+              Frete <span className="text-primary">grátis</span> liberado
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Válido apenas para os próximos <span className="text-primary font-bold">5 minutos</span>. Aproveite agora.
+            </p>
+            <a
+              {...ctaProps("popup-bonus")}
+              onClick={(e) => { fireBurst(e); ctaProps("popup-bonus").onClick(); setShowPopup(false); }}
+              className="shimmer-cta gradient-pan mt-5 relative inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+              style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            >
+              <Gift className="h-4 w-4" /> Resgatar e comprar agora
+            </a>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="mt-3 text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
+            >
+              Não, prefiro pagar mais depois
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* CONFETTI DE CLIQUE */}
+      <div className="pointer-events-none fixed inset-0 z-[70]" aria-hidden>
+        {bursts.map((b) => (
+          <div key={b.id} className="absolute" style={{ left: b.x, top: b.y }}>
+            {Array.from({ length: 14 }).map((_, i) => {
+              const angle = (i / 14) * Math.PI * 2;
+              const dist = 60 + ((i * 37) % 40);
+              const dx = Math.cos(angle) * dist;
+              const dy = Math.sin(angle) * dist;
+              const colors = ["#FFD166", "#F4A261", "#FFE08A", "#FFB347"];
+              return (
+                <span
+                  key={i}
+                  className="absolute block h-2 w-2 rounded-sm"
+                  style={{
+                    background: colors[i % colors.length],
+                    left: 0,
+                    top: 0,
+                    transform: `translate(${dx}px, ${dy}px)`,
+                    transition: "transform .9s ease-out, opacity .9s ease-out",
+                    opacity: 0,
+                    animation: "pop-in .9s ease-out forwards",
+                  }}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
 
       {/* STICKY BOTTOM CTA */}
       {/* TOAST DE COMPRA RECENTE */}
@@ -628,8 +737,9 @@ function AdmSPP() {
           </div>
           <a
             {...ctaProps("sticky-bottom")}
-            className="inline-flex flex-1 max-w-[60%] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black uppercase text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
-            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            onClick={(e) => { fireBurst(e); ctaProps("sticky-bottom").onClick(); }}
+            className="shimmer-cta gradient-pan relative inline-flex flex-1 max-w-[60%] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black uppercase text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-4 w-4" /> Comprar agora
           </a>
