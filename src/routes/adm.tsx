@@ -93,6 +93,36 @@ function AdmSPP() {
   // Feixe interativo — segue o cursor/toque
   const stageRef = useRef<HTMLDivElement | null>(null);
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
+  // Posição da lente (calibrável, salva em localStorage)
+  const DEFAULT_LENS = { x: 58, y: 55 };
+  const [lensPos, setLensPos] = useState(DEFAULT_LENS);
+  const [calibrating, setCalibrating] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  // Carrega posição salva + ativa modo calibração via ?calibrar=1
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem("arenabox_lens_pos");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed?.x === "number" && typeof parsed?.y === "number") {
+          setLensPos({ x: parsed.x, y: parsed.y });
+        }
+      }
+    } catch { /* ignore */ }
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("calibrar")) setCalibrating(true);
+  }, []);
+
+  const updateLensFromPointer = (clientX: number, clientY: number) => {
+    const el = stageRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
+    setLensPos({ x, y });
+  };
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
