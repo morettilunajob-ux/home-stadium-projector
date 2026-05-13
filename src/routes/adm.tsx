@@ -737,8 +737,9 @@ function AdmSPP() {
           </div>
           <a
             {...ctaProps("sticky-bottom")}
-            className="inline-flex flex-1 max-w-[60%] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black uppercase text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
-            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            onClick={(e) => { fireBurst(e); ctaProps("sticky-bottom").onClick(); }}
+            className="shimmer-cta gradient-pan relative inline-flex flex-1 max-w-[60%] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black uppercase text-primary-foreground transition-transform hover:scale-[1.03] active:scale-[0.97]"
+            style={{ backgroundImage: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
           >
             <ShoppingCart className="h-4 w-4" /> Comprar agora
           </a>
