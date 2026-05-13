@@ -21,6 +21,10 @@ import {
   Lock,
   Truck,
   RotateCcw,
+  MapPin,
+  TrendingUp,
+  Crown,
+  AlertTriangle,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -62,6 +66,10 @@ function AdmSPP() {
   const [viewers, setViewers] = useState(47);
   // Estoque restante simulado (decai lentamente)
   const [stock, setStock] = useState(12);
+  // Vendidos hoje — sobe ao longo do tempo, simula alta demanda
+  const [soldToday, setSoldToday] = useState(287);
+  // Toast de venda recente
+  const [toast, setToast] = useState<{ name: string; city: string; minutes: number } | null>(null);
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
@@ -98,6 +106,43 @@ function AdmSPP() {
       setStock((s) => (s > 4 ? s - 1 : s));
     }, 45000);
     return () => clearInterval(id);
+  }, []);
+
+  // Sobe contador de vendidos hoje
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSoldToday((s) => s + 1);
+    }, 9000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Notificações de compra recente (rotativas)
+  useEffect(() => {
+    const buyers = [
+      { name: "João S.", city: "São Paulo, SP" },
+      { name: "Marina L.", city: "Rio de Janeiro, RJ" },
+      { name: "Carlos M.", city: "Belo Horizonte, MG" },
+      { name: "Patrícia R.", city: "Curitiba, PR" },
+      { name: "Rafael T.", city: "Porto Alegre, RS" },
+      { name: "Aline F.", city: "Salvador, BA" },
+      { name: "Diego A.", city: "Recife, PE" },
+      { name: "Beatriz N.", city: "Fortaleza, CE" },
+      { name: "Gustavo P.", city: "Brasília, DF" },
+      { name: "Larissa C.", city: "Manaus, AM" },
+    ];
+    let i = 0;
+    const show = () => {
+      const b = buyers[i % buyers.length];
+      i++;
+      setToast({ name: b.name, city: b.city, minutes: Math.floor(Math.random() * 8) + 1 });
+      window.setTimeout(() => setToast(null), 5000);
+    };
+    const first = window.setTimeout(show, 3500);
+    const id = setInterval(show, 11000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
   }, []);
 
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
