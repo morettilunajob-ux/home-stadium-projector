@@ -26,6 +26,9 @@ import {
   AlertTriangle,
   X,
   PartyPopper,
+  Bolt,
+  BadgePercent,
+  Users,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -75,6 +78,14 @@ function AdmSPP() {
   const [showPopup, setShowPopup] = useState(false);
   // Pequenas explosões de "confetti" no clique do CTA
   const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
+  // Reações flutuantes (emojis subindo na lateral)
+  const [reactions, setReactions] = useState<{ id: number; emoji: string; left: number }[]>([]);
+  // Vendidos nos últimos 60s — micro-prova social rolando
+  const [last60, setLast60] = useState(7);
+  // Mega popup de exit-intent / 25s — desconto fantasma "destravado"
+  const [showMega, setShowMega] = useState(false);
+  // Mini-celebração quando o contador "vendidos hoje" sobe (flash)
+  const [pulseSold, setPulseSold] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
@@ -117,8 +128,55 @@ function AdmSPP() {
   useEffect(() => {
     const id = setInterval(() => {
       setSoldToday((s) => s + 1);
+      setPulseSold(true);
+      window.setTimeout(() => setPulseSold(false), 900);
     }, 9000);
     return () => clearInterval(id);
+  }, []);
+
+  // Vendidos nos últimos 60s — oscila entre 4 e 14
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLast60(() => 4 + Math.floor(Math.random() * 11));
+    }, 6000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Reações flutuantes 🔥👏❤️ subindo de tempos em tempos
+  useEffect(() => {
+    const emojis = ["🔥", "👏", "❤️", "⚡", "🏆", "🎉"];
+    const id = setInterval(() => {
+      const r = {
+        id: Date.now() + Math.random(),
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        left: 6 + Math.random() * 14, // % from left
+      };
+      setReactions((arr) => [...arr, r]);
+      window.setTimeout(() => setReactions((arr) => arr.filter((x) => x.id !== r.id)), 3700);
+    }, 2200);
+    return () => clearInterval(id);
+  }, []);
+
+  // MEGA POPUP — exit intent (mouse sai pelo topo) ou após 25s, uma vez por sessão
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("arenabox_mega_shown")) return;
+    let fired = false;
+    const fire = () => {
+      if (fired) return;
+      fired = true;
+      sessionStorage.setItem("arenabox_mega_shown", "1");
+      setShowMega(true);
+    };
+    const onLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0) fire();
+    };
+    document.addEventListener("mouseleave", onLeave);
+    const t = window.setTimeout(fire, 25000);
+    return () => {
+      document.removeEventListener("mouseleave", onLeave);
+      clearTimeout(t);
+    };
   }, []);
 
   // Popup surpresa: aparece uma vez por sessão após 8s
@@ -136,6 +194,12 @@ function AdmSPP() {
     const id = Date.now();
     setBursts((b) => [...b, { id, x: e.clientX, y: e.clientY }]);
     window.setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1200);
+    // Vibração tátil (dopamina física no mobile)
+    try {
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        (navigator as Navigator & { vibrate: (p: number | number[]) => boolean }).vibrate([12, 30, 18]);
+      }
+    } catch { /* ignore */ }
   };
 
   // Notificações de compra recente (rotativas)
