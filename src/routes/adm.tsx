@@ -96,8 +96,8 @@ function AdmSPP() {
   const [beam, setBeam] = useState({ angle: 6, length: 1, active: false });
   // Offset do feixe relativo à lente (px) — segue o cursor
   const [beamOffset, setBeamOffset] = useState({ dx: 0, dy: 0, intensity: 0 });
-  // Posição absoluta do cursor relativa à imagem (px) — usada pelo feixe direcional
-  const [pointer, setPointer] = useState<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
+  // Vetor cursor→lente em px, usado pelo feixe direcional
+  const [pointer, setPointer] = useState<{ dx: number; dy: number; dist: number; active: boolean }>({ dx: 0, dy: 0, dist: 0, active: false });
   // Partículas de poeira dinâmicas
   const [dust, setDust] = useState<{ id: number; tx: number; ty: number; size: number; delay: number }[]>([]);
   const dustIdRef = useRef(0);
@@ -150,11 +150,7 @@ function AdmSPP() {
     setBeamOffset({ dx: dx * k * 0.6, dy: dy * k * 0.6, intensity });
     setBeam({ angle: 0, length: 0.8 + intensity * 0.9, active: true });
     // Posição do cursor relativa à imagem (em %), para o feixe direcional
-    setPointer({
-      x: ((clientX - r.left) / r.width) * 100,
-      y: ((clientY - r.top) / r.height) * 100,
-      active: true,
-    });
+    setPointer({ dx, dy, dist, active: true });
 
     // Spawn de poeira em direção ao cursor — mais quanto mais perto
     if (Math.random() < 0.35 + intensity * 0.55) {
