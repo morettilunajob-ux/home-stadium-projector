@@ -99,13 +99,24 @@ function AdmSPP() {
 
   useEffect(() => {
     const KEY = "arenabox_countdown_end";
-    let end = Number(localStorage.getItem(KEY));
-    if (!end || isNaN(end) || end < Date.now()) {
-      end = Date.now() + 15 * 60 * 1000;
-      localStorage.setItem(KEY, String(end));
-    }
+    const DURATION = 15 * 60 * 1000;
+    const readEnd = () => {
+      let end = Number(localStorage.getItem(KEY));
+      if (!end || isNaN(end) || end <= Date.now()) {
+        end = Date.now() + DURATION;
+        localStorage.setItem(KEY, String(end));
+      }
+      return end;
+    };
+    let end = readEnd();
     const tick = () => {
-      const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+      let left = Math.floor((end - Date.now()) / 1000);
+      if (left <= 0) {
+        // Reinicia automaticamente — urgência permanente
+        end = Date.now() + DURATION;
+        localStorage.setItem(KEY, String(end));
+        left = Math.floor(DURATION / 1000);
+      }
       setSecondsLeft(left);
     };
     tick();
