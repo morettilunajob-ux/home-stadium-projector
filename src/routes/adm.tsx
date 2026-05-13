@@ -149,6 +149,12 @@ function AdmSPP() {
     const k = Math.min(1, max / Math.max(1, dist));
     setBeamOffset({ dx: dx * k * 0.6, dy: dy * k * 0.6, intensity });
     setBeam({ angle: 0, length: 0.8 + intensity * 0.9, active: true });
+    // Posição do cursor relativa à imagem (em %), para o feixe direcional
+    setPointer({
+      x: ((clientX - r.left) / r.width) * 100,
+      y: ((clientY - r.top) / r.height) * 100,
+      active: true,
+    });
 
     // Spawn de poeira em direção ao cursor — mais quanto mais perto
     if (Math.random() < 0.35 + intensity * 0.55) {
@@ -167,6 +173,7 @@ function AdmSPP() {
   const releasePointer = () => {
     setBeam((b) => ({ ...b, active: false, length: 1 }));
     setBeamOffset({ dx: 0, dy: 0, intensity: 0 });
+    setPointer((p) => ({ ...p, active: false }));
     setDragging(false);
   };
 
