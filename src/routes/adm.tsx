@@ -171,8 +171,14 @@ function AdmSPP() {
         </div>
 
         <div className="mx-auto max-w-xl px-5 pt-10 pb-12 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary backdrop-blur animate-in fade-in slide-in-from-top-2 duration-700">
-            <Flame className="h-3.5 w-3.5" /> Produto mais desejado da temporada
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary backdrop-blur animate-in fade-in slide-in-from-top-2 duration-700">
+              <Flame className="h-3.5 w-3.5" /> Produto mais desejado da temporada
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary px-3 py-1.5 text-xs font-black uppercase tracking-wider text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
+              <TrendingUp className="h-3.5 w-3.5" />
+              <span className="tabular-nums">{soldToday}</span> vendidos hoje
+            </div>
           </div>
 
           <h1 className="mt-6 text-4xl sm:text-5xl font-black tracking-tight uppercase leading-[0.95]">
