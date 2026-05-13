@@ -215,80 +215,116 @@ function AdmSPP() {
             Assista jogos, filmes e grandes eventos em tela gigante sem pagar caro em TV grande.
           </p>
 
-          <div className="relative mt-8">
-            {/* FEIXE DE LUZ — sai da lente do projetor */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 -z-0" aria-hidden style={{ width: "120%", height: "70%", transform: "translate(-12%, -50%)" }}>
+          <div className="relative mt-8 mx-auto w-full max-w-md aspect-[4/3]">
+            {/* TELA PROJETADA — canto superior direito, com flicker de "filme" */}
+            <div
+              className="scanlines absolute overflow-hidden rounded-md border border-primary/40"
+              style={{
+                left: "55%",
+                top: "4%",
+                width: "42%",
+                height: "44%",
+                transform: "perspective(420px) rotateY(-14deg)",
+                boxShadow: "0 0 40px oklch(0.9 0.2 88 / 0.55), inset 0 0 30px oklch(0.95 0.2 88 / 0.25)",
+              }}
+              aria-hidden
+            >
               <div
-                className="beam-pulse absolute left-0 top-1/2"
+                className="scene-pan screen-flicker absolute inset-0"
                 style={{
-                  width: "100%",
-                  height: "100%",
                   background:
-                    "conic-gradient(from 75deg at 0% 50%, transparent 0deg, oklch(0.92 0.18 88 / 0.65) 8deg, oklch(0.85 0.18 78 / 0.35) 18deg, transparent 30deg)",
-                  filter: "blur(12px)",
-                  mixBlendMode: "screen",
+                    "linear-gradient(120deg, oklch(0.7 0.22 25), oklch(0.78 0.18 60), oklch(0.85 0.2 88), oklch(0.6 0.22 280), oklch(0.7 0.22 200))",
                 }}
               />
-              {/* Hotspot dentro do feixe */}
-              <div
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full"
-                style={{
-                  background: "radial-gradient(circle, oklch(0.95 0.2 88 / 0.95), transparent 65%)",
-                  filter: "blur(2px)",
-                }}
+              <div className="absolute inset-x-0 top-0 h-2 bg-black/70" />
+              <div className="absolute inset-x-0 bottom-0 h-2 bg-black/70" />
+            </div>
+
+            {/* FEIXE DE LUZ — SVG cone saindo da lente at\u00e9 a tela */}
+            <svg
+              className="absolute inset-0 w-full h-full beam-pulse pointer-events-none"
+              viewBox="0 0 400 300"
+              preserveAspectRatio="none"
+              aria-hidden
+              style={{ mixBlendMode: "screen" }}
+            >
+              <defs>
+                <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%"  stopColor="oklch(0.98 0.18 88)" stopOpacity="0.95" />
+                  <stop offset="40%" stopColor="oklch(0.92 0.2 88)"  stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="oklch(0.85 0.2 78)" stopOpacity="0" />
+                </linearGradient>
+                <filter id="beamBlur" x="-10%" y="-10%" width="120%" height="120%">
+                  <feGaussianBlur stdDeviation="6" />
+                </filter>
+              </defs>
+              <polygon
+                points="200,170 380,12 380,132"
+                fill="url(#beamGrad)"
+                filter="url(#beamBlur)"
               />
-              {/* Partículas de poeira no feixe */}
+              <polygon
+                points="200,170 380,30 380,115"
+                fill="url(#beamGrad)"
+                opacity="0.85"
+              />
+            </svg>
+
+            {/* Part\u00edculas de poeira flutuando no feixe */}
+            <div className="pointer-events-none absolute inset-0" aria-hidden>
               {[
-                { t: "30%", d: "0s",   s: 3 },
-                { t: "55%", d: "1.2s", s: 2 },
-                { t: "42%", d: "2.4s", s: 4 },
-                { t: "65%", d: ".6s",  s: 2 },
-                { t: "48%", d: "3.1s", s: 3 },
+                { l: "55%", t: "55%", d: "0s",   s: 3 },
+                { l: "65%", t: "42%", d: "1.2s", s: 2 },
+                { l: "72%", t: "30%", d: "2.4s", s: 3 },
+                { l: "60%", t: "48%", d: ".6s",  s: 2 },
+                { l: "78%", t: "22%", d: "3.1s", s: 4 },
               ].map((p, i) => (
                 <span
                   key={i}
                   className="dust absolute rounded-full"
                   style={{
-                    left: "5%",
-                    top: p.t,
-                    width: p.s,
-                    height: p.s,
-                    background: "oklch(0.95 0.18 88 / 0.9)",
-                    boxShadow: "0 0 8px oklch(0.9 0.18 88 / 0.8)",
+                    left: p.l, top: p.t,
+                    width: p.s, height: p.s,
+                    background: "oklch(0.98 0.18 88 / 0.95)",
+                    boxShadow: "0 0 10px oklch(0.95 0.2 88 / 0.95)",
                     animationDelay: p.d,
                   }}
                 />
               ))}
             </div>
 
-            {/* PROJETOR — flutua suavemente */}
-            <div className="projector-float relative">
-            <img
-              src={heroImg}
-              alt="ArenaBox Pro — mini projetor portátil"
-              width={1024}
-              height={1024}
-              className="mx-auto w-full max-w-sm product-glow"
-            />
-              {/* LED da lente — piscando */}
+            {/* PROJETOR — flutua suavemente, posicionado \u00e0 esquerda */}
+            <div
+              className="projector-float absolute"
+              style={{ left: "0%", top: "20%", width: "60%" }}
+            >
+              <img
+                src={heroImg}
+                alt="ArenaBox Pro — mini projetor port\u00e1til"
+                width={500}
+                height={500}
+                className="w-full product-glow"
+              />
+              {/* Brilho da lente */}
               <span
-                className="led-blink absolute h-2 w-2 rounded-full"
+                className="led-blink absolute rounded-full"
                 style={{
-                  left: "12%",
-                  top: "50%",
-                  background: "oklch(0.95 0.2 88)",
-                  boxShadow: "0 0 14px 4px oklch(0.9 0.2 88 / 0.9)",
+                  left: "55%", top: "55%",
+                  width: 14, height: 14,
+                  transform: "translate(-50%,-50%)",
+                  background: "radial-gradient(circle, oklch(0.98 0.2 88) 0%, oklch(0.9 0.2 88 / 0.6) 60%, transparent 80%)",
+                  boxShadow: "0 0 28px 8px oklch(0.95 0.2 88 / 0.95)",
                 }}
               />
             </div>
 
+            {/* Sparkles ambientes */}
             <div className="pointer-events-none absolute inset-0" aria-hidden>
               {[
-                { l: "12%", t: "70%", d: "0s" },
-                { l: "78%", t: "62%", d: ".7s" },
-                { l: "30%", t: "82%", d: "1.4s" },
-                { l: "62%", t: "78%", d: "2.1s" },
-                { l: "48%", t: "68%", d: ".3s" },
+                { l: "8%", t: "78%", d: "0s" },
+                { l: "22%", t: "88%", d: ".7s" },
+                { l: "85%", t: "70%", d: "1.4s" },
+                { l: "92%", t: "50%", d: "2.1s" },
               ].map((s, i) => (
                 <Sparkles
                   key={i}
@@ -297,7 +333,8 @@ function AdmSPP() {
                 />
               ))}
             </div>
-            <div className="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-full bg-background/80 backdrop-blur border border-primary/30 px-2.5 py-1 text-[11px] font-semibold">
+
+            <div className="absolute top-1 left-1 inline-flex items-center gap-1.5 rounded-full bg-background/80 backdrop-blur border border-primary/30 px-2.5 py-1 text-[11px] font-semibold">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
