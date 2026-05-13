@@ -410,7 +410,7 @@ function AdmSPP() {
 
               {/* HALO FRONTAL — auto-calibrado em % da imagem, segue o cursor */}
               <div
-                className="pointer-events-none absolute z-10 beam-pulse"
+                className="pointer-events-none absolute z-20 beam-pulse"
                 aria-hidden
                 style={{
                   left: `calc(${lensPos.x}% + ${beamOffset.dx * 0.45}px)`,
@@ -419,9 +419,8 @@ function AdmSPP() {
                   aspectRatio: "1 / 1",
                   transform: "translate(-50%, -50%)",
                   background:
-                    "radial-gradient(circle, oklch(0.97 0.2 88 / 0.65) 0%, oklch(0.92 0.2 88 / 0.35) 22%, oklch(0.85 0.18 78 / 0.15) 48%, transparent 72%)",
+                    "radial-gradient(circle, oklch(0.97 0.2 88 / 0.85) 0%, oklch(0.92 0.2 88 / 0.55) 22%, oklch(0.85 0.18 78 / 0.25) 48%, transparent 72%)",
                   filter: "blur(20px)",
-                  mixBlendMode: "screen",
                   opacity: 0.7 + beamOffset.intensity * 0.3,
                   transition: "left .25s ease-out, top .25s ease-out, width .35s ease-out, opacity .25s ease",
                 }}
@@ -429,7 +428,7 @@ function AdmSPP() {
 
               {/* GHOST orb secundário (lens flare clássico) */}
               <div
-                className="pointer-events-none absolute z-10"
+                className="pointer-events-none absolute z-20"
                 aria-hidden
                 style={{
                   left: `calc(${lensPos.x}% + ${beamOffset.dx * 0.9}px)`,
@@ -439,13 +438,12 @@ function AdmSPP() {
                   transform: "translate(-50%, -50%)",
                   background: "radial-gradient(circle, oklch(0.95 0.18 78 / 0.55), transparent 70%)",
                   filter: "blur(10px)",
-                  mixBlendMode: "screen",
                   opacity: 0.4 + beamOffset.intensity * 0.5,
                   transition: "left .35s ease-out, top .35s ease-out, opacity .25s",
                 }}
               />
               <div
-                className="pointer-events-none absolute z-10"
+                className="pointer-events-none absolute z-20"
                 aria-hidden
                 style={{
                   left: `calc(${lensPos.x}% - ${beamOffset.dx * 0.4}px)`,
@@ -455,7 +453,6 @@ function AdmSPP() {
                   transform: "translate(-50%, -50%)",
                   background: "radial-gradient(circle, oklch(0.99 0.22 88 / 0.85), transparent 70%)",
                   filter: "blur(4px)",
-                  mixBlendMode: "screen",
                   opacity: 0.5 + beamOffset.intensity * 0.5,
                   transition: "left .35s ease-out, top .35s ease-out",
                 }}
@@ -463,7 +460,7 @@ function AdmSPP() {
 
               {/* NÚCLEO da lente — gradiente esférico premium */}
               <div
-                className="pointer-events-none absolute z-10"
+                className="pointer-events-none absolute z-20"
                 aria-hidden
                 style={{
                   left: `${lensPos.x}%`,
@@ -474,13 +471,12 @@ function AdmSPP() {
                   background:
                     "radial-gradient(circle at 38% 35%, oklch(1 0 0 / 0.95) 0%, oklch(0.99 0.22 88 / 0.9) 18%, oklch(0.9 0.2 78 / 0.45) 50%, transparent 78%)",
                   filter: "blur(4px)",
-                  mixBlendMode: "screen",
                 }}
               />
 
               {/* LENS FLARE anamórfico — streak horizontal */}
               <div
-                className="pointer-events-none absolute z-10 flare-shimmer"
+                className="pointer-events-none absolute z-20 flare-shimmer"
                 aria-hidden
                 style={{
                   left: `${lensPos.x}%`,
@@ -491,13 +487,12 @@ function AdmSPP() {
                   background:
                     "linear-gradient(90deg, transparent 0%, oklch(0.98 0.18 88 / 0.45) 25%, oklch(1 0 0 / 0.85) 50%, oklch(0.98 0.18 88 / 0.45) 75%, transparent 100%)",
                   filter: "blur(2.5px)",
-                  mixBlendMode: "screen",
                   opacity: 0.55 + beamOffset.intensity * 0.45,
                 }}
               />
               {/* Streak vertical sutil */}
               <div
-                className="pointer-events-none absolute z-10"
+                className="pointer-events-none absolute z-20"
                 aria-hidden
                 style={{
                   left: `${lensPos.x}%`,
@@ -508,13 +503,12 @@ function AdmSPP() {
                   background:
                     "linear-gradient(180deg, transparent, oklch(0.98 0.18 88 / 0.6), transparent)",
                     filter: "blur(2px)",
-                  mixBlendMode: "screen",
                   opacity: 0.35 + beamOffset.intensity * 0.5,
                 }}
               />
 
               {/* PARTÍCULAS DE POEIRA — saem da lente em direção ao cursor */}
-              <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden>
+              <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden" aria-hidden>
                 {dust.map((p) => (
                   <span
                     key={p.id}
