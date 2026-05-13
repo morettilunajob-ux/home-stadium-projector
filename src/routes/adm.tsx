@@ -5,7 +5,6 @@ import {
   Check,
   Flame,
   ShieldCheck,
-  Package,
   Zap,
   Tv,
   Film,
@@ -21,6 +20,10 @@ import {
   Lock,
   Truck,
   RotateCcw,
+  MapPin,
+  TrendingUp,
+  Crown,
+  AlertTriangle,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -62,6 +65,10 @@ function AdmSPP() {
   const [viewers, setViewers] = useState(47);
   // Estoque restante simulado (decai lentamente)
   const [stock, setStock] = useState(12);
+  // Vendidos hoje — sobe ao longo do tempo, simula alta demanda
+  const [soldToday, setSoldToday] = useState(287);
+  // Toast de venda recente
+  const [toast, setToast] = useState<{ name: string; city: string; minutes: number } | null>(null);
 
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 400);
@@ -100,6 +107,43 @@ function AdmSPP() {
     return () => clearInterval(id);
   }, []);
 
+  // Sobe contador de vendidos hoje
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSoldToday((s) => s + 1);
+    }, 9000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Notificações de compra recente (rotativas)
+  useEffect(() => {
+    const buyers = [
+      { name: "João S.", city: "São Paulo, SP" },
+      { name: "Marina L.", city: "Rio de Janeiro, RJ" },
+      { name: "Carlos M.", city: "Belo Horizonte, MG" },
+      { name: "Patrícia R.", city: "Curitiba, PR" },
+      { name: "Rafael T.", city: "Porto Alegre, RS" },
+      { name: "Aline F.", city: "Salvador, BA" },
+      { name: "Diego A.", city: "Recife, PE" },
+      { name: "Beatriz N.", city: "Fortaleza, CE" },
+      { name: "Gustavo P.", city: "Brasília, DF" },
+      { name: "Larissa C.", city: "Manaus, AM" },
+    ];
+    let i = 0;
+    const show = () => {
+      const b = buyers[i % buyers.length];
+      i++;
+      setToast({ name: b.name, city: b.city, minutes: Math.floor(Math.random() * 8) + 1 });
+      window.setTimeout(() => setToast(null), 5000);
+    };
+    const first = window.setTimeout(show, 3500);
+    const id = setInterval(show, 11000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, []);
+
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
   const ss = String(secondsLeft % 60).padStart(2, "0");
 
@@ -126,8 +170,14 @@ function AdmSPP() {
         </div>
 
         <div className="mx-auto max-w-xl px-5 pt-10 pb-12 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary backdrop-blur animate-in fade-in slide-in-from-top-2 duration-700">
-            <Flame className="h-3.5 w-3.5" /> Produto mais desejado da temporada
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary backdrop-blur animate-in fade-in slide-in-from-top-2 duration-700">
+              <Flame className="h-3.5 w-3.5" /> Produto mais desejado da temporada
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary px-3 py-1.5 text-xs font-black uppercase tracking-wider text-primary-foreground" style={{ background: "var(--gradient-gold)" }}>
+              <TrendingUp className="h-3.5 w-3.5" />
+              <span className="tabular-nums">{soldToday}</span> vendidos hoje
+            </div>
           </div>
 
           <h1 className="mt-6 text-4xl sm:text-5xl font-black tracking-tight uppercase leading-[0.95]">
@@ -365,6 +415,24 @@ function AdmSPP() {
       {/* PROVA SOCIAL */}
       <section className="px-5 py-14 bg-card/50">
         <div className="mx-auto max-w-xl">
+          <div className="mb-8 grid grid-cols-3 gap-3">
+            <div className="rounded-2xl border-2 border-primary bg-card p-4 text-center" style={{ boxShadow: "var(--shadow-gold)" }}>
+              <Crown className="h-5 w-5 mx-auto text-primary" />
+              <p className="mt-1.5 text-2xl font-black tabular-nums">{soldToday}+</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">vendidos hoje</p>
+            </div>
+            <div className="rounded-2xl border border-primary/30 bg-card p-4 text-center">
+              <Star className="h-5 w-5 mx-auto text-primary fill-current" />
+              <p className="mt-1.5 text-2xl font-black">4.9</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">+12 mil avaliações</p>
+            </div>
+            <div className="rounded-2xl border border-primary/30 bg-card p-4 text-center">
+              <MapPin className="h-5 w-5 mx-auto text-primary" />
+              <p className="mt-1.5 text-2xl font-black">26</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">estados atendidos</p>
+            </div>
+          </div>
+
           <h2 className="text-center text-3xl font-black uppercase">
             Quem comprou <span className="text-primary">amou</span>
           </h2>
@@ -408,6 +476,48 @@ function AdmSPP() {
             <div className="rounded-lg bg-background p-3"><Lock className="h-4 w-4 mx-auto text-primary" /><span className="block mt-1.5">Pagamento seguro</span></div>
             <div className="rounded-lg bg-background p-3"><Truck className="h-4 w-4 mx-auto text-primary" /><span className="block mt-1.5">Envio nacional</span></div>
           </div>
+        </div>
+      </section>
+
+      {/* ALERTA DE DEMANDA */}
+      <section className="px-5 py-12">
+        <div className="mx-auto max-w-xl rounded-3xl border-2 border-primary bg-gradient-to-br from-primary/15 via-card to-card p-6" style={{ boxShadow: "var(--shadow-gold)" }}>
+          <div className="flex items-start gap-3">
+            <div className="rounded-lg p-2.5 shrink-0 animate-pulse" style={{ background: "var(--gradient-gold)" }}>
+              <AlertTriangle className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-widest text-primary">Aviso importante</p>
+              <h3 className="mt-1 text-xl font-black uppercase leading-tight">
+                Demanda absurda — limite de 300 unidades por dia
+              </h3>
+              <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
+                Por questões de logística, liberamos no máximo <span className="text-primary font-bold">300 ArenaBox Pro por dia</span>.
+                Quando o lote do dia acaba, a página é fechada e o próximo lote sai pelo preço cheio.
+              </p>
+              <p className="mt-3 text-sm font-bold">
+                <span className="text-primary">{soldToday}</span> de 300 já foram comprados hoje.
+              </p>
+              <div className="mt-3 h-2 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-1000"
+                  style={{
+                    width: `${Math.min(100, (soldToday / 300) * 100)}%`,
+                    background: "var(--gradient-gold)",
+                    boxShadow: "var(--shadow-gold)",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <a
+            {...ctaProps("alerta-demanda")}
+            className="mt-5 inline-flex items-center justify-center gap-2 w-full rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+          >
+            <ShoppingCart className="h-4 w-4" /> Quero o meu antes que esgote
+          </a>
         </div>
       </section>
 
@@ -483,6 +593,29 @@ function AdmSPP() {
       </footer>
 
       {/* STICKY BOTTOM CTA */}
+      {/* TOAST DE COMPRA RECENTE */}
+      <div
+        aria-live="polite"
+        className={`fixed left-3 z-50 max-w-[300px] rounded-2xl border border-primary/40 bg-card/95 backdrop-blur p-3 pr-4 shadow-2xl transition-all duration-500 ${
+          toast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 84px)", boxShadow: "var(--shadow-gold)" }}
+      >
+        <div className="flex items-start gap-3">
+          <div className="rounded-full p-1.5 shrink-0" style={{ background: "var(--gradient-gold)" }}>
+            <ShoppingCart className="h-3.5 w-3.5 text-primary-foreground" />
+          </div>
+          <div className="text-[12px] leading-snug">
+            <p className="font-bold">
+              {toast?.name} <span className="text-muted-foreground font-normal">acabou de comprar</span>
+            </p>
+            <p className="text-muted-foreground">
+              {toast?.city} · há {toast?.minutes} min
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div
         className={`fixed bottom-0 inset-x-0 z-50 backdrop-blur-md bg-background/90 border-t border-primary/30 transition-transform duration-300 ${
           showSticky ? "translate-y-0" : "translate-y-full"
