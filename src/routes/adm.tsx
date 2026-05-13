@@ -29,6 +29,10 @@ import {
   Bolt,
   BadgePercent,
   Users,
+  Package,
+  Cable,
+  Cpu,
+  Volume2,
 } from "lucide-react";
 import { buildCheckoutUrl, trackClick } from "@/lib/tracking";
 
@@ -774,6 +778,117 @@ function AdmSPP() {
 
       {/* FAQ */}
       <section className="px-5 py-14">
+        <div className="mx-auto max-w-xl mb-10">
+          {/* DETALHES DO PRODUTO */}
+          <div className="text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+              <Package className="h-3.5 w-3.5" /> Detalhes do produto
+            </span>
+            <h2 className="mt-4 text-3xl font-black uppercase leading-tight">
+              Tudo o que vem na <span className="text-primary">caixa</span>
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Todos os produtos são <span className="text-foreground font-semibold">testados antes do envio</span>. Dúvidas? Respondemos rápido em horário comercial.
+            </p>
+          </div>
+
+          {/* DESCRIÇÃO */}
+          <div className="mt-8 rounded-2xl border border-border bg-card p-5 text-sm leading-relaxed text-foreground/90 space-y-3">
+            <p>
+              O <strong>Mini Projetor Portátil LED 1080p 600 Lumens HDMI</strong> é compacto, premium e usa tecnologia LED para projetar imagens em alta definição. Com suporte a <strong>1080p</strong>, entrega vídeos nítidos e detalhados.
+            </p>
+            <p>
+              Tem saída <strong>HDMI</strong>, <strong>USB</strong>, <strong>AV</strong> e <strong>cartão de memória</strong> — conecte celular, notebook, videogame, TV box ou pendrive em segundos.
+            </p>
+            <p>
+              Com <strong>600 lumens</strong>, é perfeito para ambientes escuros: filmes, séries, jogos, futebol, apresentações ou aulas. Lâmpada LED com até <strong>30.000 horas</strong> de vida útil — durabilidade premium, manutenção quase zero.
+            </p>
+          </div>
+
+          {/* BENEFÍCIOS RÁPIDOS */}
+          <div className="mt-6 grid sm:grid-cols-2 gap-3">
+            {[
+              "Compacto e portátil — leve para qualquer lugar",
+              "Imagem nítida em alta definição",
+              "Suporte total a vídeo 1080p",
+              "Lâmpada LED com 30.000h de vida útil",
+              "Compatível com vários formatos e dispositivos",
+              "Distância e tamanho de tela ajustáveis",
+            ].map((b, i) => (
+              <div key={i} className="flex items-start gap-2.5 rounded-xl border border-primary/15 bg-background p-3">
+                <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm">{b}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* ESPECIFICAÇÕES TÉCNICAS */}
+          <div className="mt-8 rounded-2xl border border-primary/20 bg-card overflow-hidden">
+            <div className="flex items-center gap-2 px-5 py-3 border-b border-primary/15" style={{ background: "var(--gradient-gold)" }}>
+              <Cpu className="h-4 w-4 text-primary-foreground" />
+              <h3 className="text-sm font-black uppercase tracking-wider text-primary-foreground">Especificações técnicas</h3>
+            </div>
+            <dl className="divide-y divide-border text-sm">
+              {[
+                ["Modelo", "YG-300"],
+                ["Tipo de exibição", "LCD"],
+                ["Resolução original", "240×320"],
+                ["Resolução de apoio", "1920×1080"],
+                ["Brilho", "600 lumens"],
+                ["Contraste", "800:1"],
+                ["Distância de projeção", "1,5 – 2 m"],
+                ["Tamanho da projeção", "24 – 60 polegadas"],
+                ["Interfaces", "HDMI, USB, áudio 3,5mm, cartão TF"],
+                ["Certificações", "CE, ROHS, FCC"],
+                ["Lâmpada", "LED — 30.000 horas"],
+                ["Formato de imagem", "BMP, PNG, JPEG"],
+                ["Formato de vídeo", "MP4, RMVB, AVI, RM, MKV…"],
+                ["Formato de áudio", "MP3, WMA, OGG, AAC, FLAC, APE, WAV"],
+                ["Tensão de entrada", "100–240 V · 50/60 Hz · 2.0 A"],
+                ["Potência de saída", "12 V — 1.5 A"],
+                ["Alto-falante embutido", "Sim"],
+                ["Ruído", "24 dB"],
+                ["Material", "ABS"],
+                ["Tamanho", "12,5 × 8,5 × 4,5 cm"],
+              ].map(([k, v]) => (
+                <div key={k} className="grid grid-cols-2 gap-3 px-5 py-2.5">
+                  <dt className="text-muted-foreground">{k}</dt>
+                  <dd className="font-semibold text-right">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          {/* ITENS INCLUSOS */}
+          <div className="mt-8 rounded-2xl border-2 border-primary/40 bg-card p-5" style={{ boxShadow: "var(--shadow-glow)" }}>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="rounded-lg p-2" style={{ background: "var(--gradient-gold)" }}>
+                <Package className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <h3 className="text-base font-black uppercase tracking-wide">Itens inclusos</h3>
+            </div>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { icon: Tv, label: "1× Mini Projetor Portátil LED 1080p 600 Lumens" },
+                { icon: Cable, label: "1× Cabo P2 × AV Fêmea" },
+                { icon: Film, label: "1× Manual do usuário" },
+                { icon: Zap, label: "1× Fonte de alimentação" },
+                { icon: Volume2, label: "1× Controle remoto" },
+              ].map(({ icon: Icon, label }, i) => (
+                <li key={i} className="flex items-center gap-3 rounded-xl bg-background border border-border px-3 py-2.5">
+                  <Icon className="h-4 w-4 text-primary shrink-0" />
+                  <span className="font-semibold">{label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* AVISO DE TESTE / SUPORTE */}
+          <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/5 p-4 text-center text-xs text-foreground/85">
+            ✅ <strong>Todos os produtos são testados antes do envio.</strong> Dúvidas? Entre em contato — respondemos o mais rápido possível em horário comercial.
+          </div>
+        </div>
+
         <div className="mx-auto max-w-xl">
           <h2 className="text-center text-3xl font-black uppercase">
             Perguntas <span className="text-primary">frequentes</span>
