@@ -83,10 +83,6 @@ function GremioPage() {
           <p className="text-muted-foreground text-sm">Carregando...</p>
         )}
 
-        {leads && leads.length === 0 && (
-          <p className="text-muted-foreground text-sm">Nenhum lead ainda.</p>
-        )}
-
         {/* VISITORS TABLE */}
         {tab === "visitors" && visitors && visitors.length > 0 && (
           <div className="overflow-x-auto rounded-lg border border-border mb-8">
