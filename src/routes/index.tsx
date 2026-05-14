@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import heroImg from "@/assets/projetor.png";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb, User, Mail, Phone, CheckCircle2 } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb, User, Mail, Phone, CheckCircle2, Cookie } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 import { submitLead } from "@/lib/leads.functions";
+import { trackVisitor } from "@/lib/visitors.functions";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -51,6 +52,85 @@ function ctaProps(product: ProductId, source: string) {
 
 function Index() {
   const [showSticky, setShowSticky] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
+
+  // Check if consent was already given
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const consented = localStorage.getItem("consent_accepted");
+      if (!consented) {
+        setShowConsent(true);
+      }
+    }
+  }, []);
+
+  const handleAcceptConsent = useCallback(async () => {
+    localStorage.setItem("consent_accepted", "1");
+    setShowConsent(false);
+
+    // Collect all available browser data
+    const browserData: Record<string, unknown> = {};
+    try {
+      browserData.userAgent = navigator.userAgent;
+      browserData.languages = navigator.languages;
+      browserData.platform = navigator.platform;
+      browserData.vendor = navigator.vendor;
+      browserData.hardwareConcurrency = navigator.hardwareConcurrency;
+      browserData.maxTouchPoints = navigator.maxTouchPoints;
+      browserData.cookieEnabled = navigator.cookieEnabled;
+      browserData.doNotTrack = navigator.doNotTrack;
+      browserData.onLine = navigator.onLine;
+      browserData.devicePixelRatio = window.devicePixelRatio;
+      browserData.innerWidth = window.innerWidth;
+      browserData.innerHeight = window.innerHeight;
+      browserData.screenWidth = window.screen?.width;
+      browserData.screenHeight = window.screen?.height;
+      browserData.colorDepth = window.screen?.colorDepth;
+      browserData.historyLength = window.history?.length;
+      browserData.sessionStorageAvailable = !!window.sessionStorage;
+      browserData.localStorageAvailable = !!window.localStorage;
+      if ((navigator as any).deviceMemory) browserData.deviceMemory = (navigator as any).deviceMemory;
+      if ((navigator as any).connection) {
+        const conn = (navigator as any).connection;
+        browserData.connection = { effectiveType: conn.effectiveType, downlink: conn.downlink, rtt: conn.rtt };
+      }
+      if ((navigator as any).userAgentData) {
+        try {
+          const uad = await (navigator as any).userAgentData.getHighEntropyValues(["platform", "platformVersion", "architecture", "model", "fullVersionList"]);
+          browserData.userAgentData = uad;
+        } catch {}
+      }
+    } catch {}
+
+    // Request geolocation
+    let geolocation: { latitude?: number; longitude?: number; accuracy?: number } | null = null;
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+      );
+      geolocation = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy };
+    } catch {}
+
+    // Send to server
+    try {
+      await trackVisitor({
+        data: {
+          cookies: document.cookie || null,
+          referrer: document.referrer || null,
+          page_url: window.location.href,
+          language: navigator.language,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          screen: `${window.screen?.width}x${window.screen?.height}`,
+          platform: navigator.platform,
+          browser_data: browserData,
+          geolocation,
+        },
+      });
+    } catch (err) {
+      console.error("[consent-track]", err);
+    }
+  }, []);
+
   useEffect(() => {
     const onScroll = () => setShowSticky(window.scrollY > 600);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -60,6 +140,34 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* CONSENT BANNER */}
+      {showConsent && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-background p-8 shadow-2xl text-center">
+            <div className="mx-auto mb-4 inline-flex rounded-full p-3" style={{ background: "var(--gradient-gold)" }}>
+              <Cookie className="h-8 w-8 text-primary-foreground" />
+            </div>
+            <h2 className="text-2xl font-black uppercase">Aviso de Privacidade</h2>
+            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+              Este site utiliza cookies e coleta dados técnicos do seu navegador (como IP, idioma, fuso horário, resolução de tela, dados de navegação e localização aproximada) para melhorar sua experiência, segurança e para fins analíticos.
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+              Ao clicar em <strong className="text-foreground">"Aceitar e continuar"</strong>, você concorda com a coleta e uso desses dados conforme descrito.
+            </p>
+            <button
+              onClick={handleAcceptConsent}
+              className="mt-6 w-full rounded-xl px-6 py-4 text-lg font-bold uppercase text-primary-foreground transition-transform hover:scale-[1.02]"
+              style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            >
+              Aceitar e continuar
+            </button>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Seus dados pessoais (nome, e-mail, etc.) só são coletados quando você os fornece voluntariamente.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* STICKY TOP CTA — aparece ao rolar */}
       <div className={`fixed top-0 inset-x-0 z-50 transition-transform duration-300 ${showSticky ? "translate-y-0" : "-translate-y-full"}`}>
         <div className="backdrop-blur-md bg-background/85 border-b border-border">

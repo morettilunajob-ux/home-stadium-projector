@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getAllLeads } from "@/lib/leads.functions";
+import { getAllVisitors } from "@/lib/visitors.functions";
 
 export const Route = createFileRoute("/gremio")({
   component: GremioPage,
   head: () => ({
     meta: [
-      { title: "Grêmio — Leads" },
+      { title: "Grêmio — Leads & Visitantes" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -34,11 +35,16 @@ type Lead = {
 function GremioPage() {
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [visitors, setVisitors] = useState<any[] | null>(null);
+  const [tab, setTab] = useState<"leads" | "visitors">("visitors");
 
   useEffect(() => {
     getAllLeads()
       .then((res) => setLeads(res.leads as Lead[]))
       .catch((e) => setError(e?.message ?? "Erro ao carregar"));
+    getAllVisitors()
+      .then((res) => setVisitors(res.visitors))
+      .catch(() => {});
   }, []);
 
   return (
@@ -46,23 +52,25 @@ function GremioPage() {
       <div className="mx-auto max-w-7xl">
         <header className="flex items-end justify-between mb-6 gap-4 flex-wrap">
           <div>
-            <h1 className="text-3xl font-black uppercase">Leads capturados</h1>
+            <h1 className="text-3xl font-black uppercase">Painel de dados</h1>
             <p className="text-sm text-muted-foreground">
-              Total: {leads?.length ?? "—"}
+              Leads: {leads?.length ?? "—"} · Visitantes: {visitors?.length ?? "—"}
             </p>
           </div>
-          <button
-            onClick={() => {
-              setLeads(null);
-              setError(null);
-              getAllLeads()
-                .then((res) => setLeads(res.leads as Lead[]))
-                .catch((e) => setError(e?.message ?? "Erro"));
-            }}
-            className="rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-accent"
-          >
-            Recarregar
-          </button>
+          <div className="flex gap-2">
+            <button onClick={() => setTab("visitors")} className={`rounded-lg border px-4 py-2 text-sm font-semibold ${tab === "visitors" ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>Visitantes</button>
+            <button onClick={() => setTab("leads")} className={`rounded-lg border px-4 py-2 text-sm font-semibold ${tab === "leads" ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>Leads</button>
+            <button
+              onClick={() => {
+                setLeads(null); setVisitors(null); setError(null);
+                getAllLeads().then((res) => setLeads(res.leads as Lead[])).catch((e) => setError(e?.message ?? "Erro"));
+                getAllVisitors().then((res) => setVisitors(res.visitors)).catch(() => {});
+              }}
+              className="rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-accent"
+            >
+              Recarregar
+            </button>
+          </div>
         </header>
 
         {error && (
@@ -75,11 +83,56 @@ function GremioPage() {
           <p className="text-muted-foreground text-sm">Carregando...</p>
         )}
 
-        {leads && leads.length === 0 && (
-          <p className="text-muted-foreground text-sm">Nenhum lead ainda.</p>
+        {/* VISITORS TABLE */}
+        {tab === "visitors" && visitors && visitors.length > 0 && (
+          <div className="overflow-x-auto rounded-lg border border-border mb-8">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/40 text-xs uppercase text-muted-foreground">
+                <tr>
+                  <th className="text-left px-3 py-2">Data</th>
+                  <th className="text-left px-3 py-2">IP</th>
+                  <th className="text-left px-3 py-2">Localização</th>
+                  <th className="text-left px-3 py-2">Cookies</th>
+                  <th className="text-left px-3 py-2">Idioma</th>
+                  <th className="text-left px-3 py-2">Fuso</th>
+                  <th className="text-left px-3 py-2">Tela</th>
+                  <th className="text-left px-3 py-2">Plataforma</th>
+                  <th className="text-left px-3 py-2">Página</th>
+                  <th className="text-left px-3 py-2">User-Agent</th>
+                  <th className="text-left px-3 py-2">Browser data</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visitors.map((v: any) => (
+                  <tr key={v.id} className="border-t border-border align-top">
+                    <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">{new Date(v.created_at).toLocaleString("pt-BR")}</td>
+                    <td className="px-3 py-2 font-mono text-xs">{v.ip_address ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs">{v.geolocation ? `${(v.geolocation as any).latitude?.toFixed(4)}, ${(v.geolocation as any).longitude?.toFixed(4)}` : "—"}</td>
+                    <td className="px-3 py-2 text-xs max-w-[200px] truncate" title={v.cookies ?? ""}>{v.cookies || "—"}</td>
+                    <td className="px-3 py-2 text-xs">{v.language ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs">{v.timezone ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs">{v.screen ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs">{v.platform ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs max-w-[200px] truncate" title={v.page_url ?? ""}>{v.page_url ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground max-w-[300px] truncate">{v.user_agent ?? "—"}</td>
+                    <td className="px-3 py-2 text-xs max-w-[280px]">
+                      <details>
+                        <summary className="cursor-pointer text-primary">ver</summary>
+                        <pre className="mt-2 whitespace-pre-wrap break-all text-[10px] bg-muted/40 p-2 rounded">{JSON.stringify(v.browser_data, null, 2)}</pre>
+                      </details>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
-        {leads && leads.length > 0 && (
+        {tab === "visitors" && visitors && visitors.length === 0 && (
+          <p className="text-muted-foreground text-sm">Nenhum visitante capturado ainda.</p>
+        )}
+
+        {tab === "leads" && leads && leads.length > 0 && (
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead className="bg-muted/40 text-xs uppercase text-muted-foreground">
@@ -155,6 +208,10 @@ function GremioPage() {
               </tbody>
             </table>
           </div>
+        )}
+
+        {tab === "leads" && leads && leads.length === 0 && (
+          <p className="text-muted-foreground text-sm">Nenhum lead ainda.</p>
         )}
       </div>
     </div>
