@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GremioRouteImport } from './routes/gremio'
 import { Route as AdmRouteImport } from './routes/adm'
 import { Route as IndexRouteImport } from './routes/index'
 
+const GremioRoute = GremioRouteImport.update({
+  id: '/gremio',
+  path: '/gremio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdmRoute = AdmRouteImport.update({
   id: '/adm',
   path: '/adm',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/adm': typeof AdmRoute
+  '/gremio': typeof GremioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/adm': typeof AdmRoute
+  '/gremio': typeof GremioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/adm': typeof AdmRoute
+  '/gremio': typeof GremioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/adm'
+  fullPaths: '/' | '/adm' | '/gremio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/adm'
-  id: '__root__' | '/' | '/adm'
+  to: '/' | '/adm' | '/gremio'
+  id: '__root__' | '/' | '/adm' | '/gremio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdmRoute: typeof AdmRoute
+  GremioRoute: typeof GremioRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/gremio': {
+      id: '/gremio'
+      path: '/gremio'
+      fullPath: '/gremio'
+      preLoaderRoute: typeof GremioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/adm': {
       id: '/adm'
       path: '/adm'
@@ -71,7 +88,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdmRoute: AdmRoute,
+  GremioRoute: GremioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
