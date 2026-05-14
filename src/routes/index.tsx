@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/projetor.png";
-import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb } from "lucide-react";
+import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb, User, Mail, Phone, CheckCircle2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
 
@@ -416,6 +416,8 @@ function Index() {
       </section>
 
       {/* CTA FINAL */}
+      <LeadForm />
+
       <section className="relative py-24 px-6 overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
         <div className="absolute inset-0 -z-10" aria-hidden>
           <div className="absolute inset-0 opacity-20" style={{ background: "var(--gradient-gold)" }} />
