@@ -458,6 +458,7 @@ function LeadForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [cpf, setCpf] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -471,6 +472,48 @@ function LeadForm() {
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   }
 
+  function formatCpf(v: string) {
+    const d = v.replace(/\D/g, "").slice(0, 11);
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return `${d.slice(0,3)}.${d.slice(3)}`;
+    if (d.length <= 9) return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6)}`;
+    return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`;
+  }
+
+  function collectBrowserData() {
+    if (typeof window === "undefined") return {};
+    const n = window.navigator as Navigator & {
+      userAgentData?: { brands?: unknown; mobile?: boolean; platform?: string };
+      deviceMemory?: number;
+      connection?: { effectiveType?: string; downlink?: number; rtt?: number };
+    };
+    const s = window.screen;
+    return {
+      user_agent: n.userAgent,
+      languages: n.languages,
+      platform: n.platform,
+      vendor: n.vendor,
+      hardware_concurrency: n.hardwareConcurrency,
+      device_memory: n.deviceMemory,
+      max_touch_points: n.maxTouchPoints,
+      cookie_enabled: n.cookieEnabled,
+      do_not_track: n.doNotTrack,
+      online: n.onLine,
+      user_agent_data: n.userAgentData
+        ? { brands: n.userAgentData.brands, mobile: n.userAgentData.mobile, platform: n.userAgentData.platform }
+        : null,
+      connection: n.connection
+        ? { effective_type: n.connection.effectiveType, downlink: n.connection.downlink, rtt: n.connection.rtt }
+        : null,
+      screen: { w: s.width, h: s.height, avail_w: s.availWidth, avail_h: s.availHeight, color_depth: s.colorDepth, pixel_depth: s.pixelDepth },
+      viewport: { w: window.innerWidth, h: window.innerHeight, dpr: window.devicePixelRatio },
+      timezone_offset_min: new Date().getTimezoneOffset(),
+      history_length: window.history.length,
+      session_storage: typeof window.sessionStorage !== "undefined",
+      local_storage: typeof window.localStorage !== "undefined",
+    };
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -478,6 +521,7 @@ function LeadForm() {
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
     const phoneDigits = phone.replace(/\D/g, "");
+    const cpfDigits = cpf.replace(/\D/g, "");
 
     if (trimmedName.length < 2 || trimmedName.length > 100) {
       setError("Informe um nome válido.");
@@ -494,12 +538,21 @@ function LeadForm() {
 
     setLoading(true);
     try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       await submitLead({
         data: {
           name: trimmedName,
           email: trimmedEmail,
           phone: phoneDigits,
+          cpf: cpfDigits || null,
           source: "landing",
+          referrer: typeof document !== "undefined" ? document.referrer : null,
+          page_url: typeof window !== "undefined" ? window.location.href : null,
+          language: typeof navigator !== "undefined" ? navigator.language : null,
+          timezone: tz,
+          screen: typeof window !== "undefined" ? `${window.screen.width}x${window.screen.height}@${window.devicePixelRatio}` : null,
+          platform: typeof navigator !== "undefined" ? navigator.platform : null,
+          browser_data: collectBrowserData(),
         },
       });
       setSubmitted(true);
@@ -577,6 +630,21 @@ function LeadForm() {
                   onChange={(e) => setPhone(formatPhone(e.target.value))}
                   required
                   placeholder="(11) 99999-9999"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-3 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-foreground">CPF</span>
+              <div className="relative mt-1">
+                <BadgeCheck className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={cpf}
+                  onChange={(e) => setCpf(formatCpf(e.target.value))}
+                  placeholder="000.000.000-00"
                   className="w-full rounded-lg border border-border bg-card pl-10 pr-3 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
