@@ -4,7 +4,7 @@ import heroImg from "@/assets/projetor.png";
 import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb, User, Mail, Phone, CheckCircle2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
-import { supabase } from "@/integrations/supabase/client";
+import { submitLead } from "@/lib/leads.functions";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -494,13 +494,14 @@ function LeadForm() {
 
     setLoading(true);
     try {
-      const { error: insertError } = await supabase.from("leads").insert({
-        name: trimmedName,
-        email: trimmedEmail,
-        phone: phoneDigits,
-        source: "landing",
+      await submitLead({
+        data: {
+          name: trimmedName,
+          email: trimmedEmail,
+          phone: phoneDigits,
+          source: "landing",
+        },
       });
-      if (insertError) throw insertError;
       setSubmitted(true);
     } catch (err) {
       console.error("[lead] insert failed", err);
