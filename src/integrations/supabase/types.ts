@@ -16,33 +16,57 @@ export type Database = {
     Tables: {
       leads: {
         Row: {
+          browser_data: Json | null
+          cpf: string | null
           created_at: string
           email: string
           id: string
           ip_address: string | null
+          language: string | null
           name: string
+          page_url: string | null
           phone: string
+          platform: string | null
+          referrer: string | null
+          screen: string | null
           source: string | null
+          timezone: string | null
           user_agent: string | null
         }
         Insert: {
+          browser_data?: Json | null
+          cpf?: string | null
           created_at?: string
           email: string
           id?: string
           ip_address?: string | null
+          language?: string | null
           name: string
+          page_url?: string | null
           phone: string
+          platform?: string | null
+          referrer?: string | null
+          screen?: string | null
           source?: string | null
+          timezone?: string | null
           user_agent?: string | null
         }
         Update: {
+          browser_data?: Json | null
+          cpf?: string | null
           created_at?: string
           email?: string
           id?: string
           ip_address?: string | null
+          language?: string | null
           name?: string
+          page_url?: string | null
           phone?: string
+          platform?: string | null
+          referrer?: string | null
+          screen?: string | null
           source?: string | null
+          timezone?: string | null
           user_agent?: string | null
         }
         Relationships: []
