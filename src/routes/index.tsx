@@ -453,3 +453,153 @@ function Index() {
   );
 }
 
+function LeadForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  function formatPhone(v: string) {
+    const digits = v.replace(/\D/g, "").slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    if (digits.length <= 10)
+      return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const phoneDigits = phone.replace(/\D/g, "");
+
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      setError("Informe um nome válido.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail) || trimmedEmail.length > 255) {
+      setError("Informe um e-mail válido.");
+      return;
+    }
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      setError("Informe um telefone com DDD.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const leads = JSON.parse(localStorage.getItem("arenabox_leads") || "[]");
+      leads.push({
+        name: trimmedName,
+        email: trimmedEmail,
+        phone: phoneDigits,
+        at: new Date().toISOString(),
+      });
+      localStorage.setItem("arenabox_leads", JSON.stringify(leads));
+      setSubmitted(true);
+    } catch {
+      setError("Não foi possível salvar. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className="py-20 px-6 bg-background border-t border-border">
+      <div className="mx-auto max-w-2xl">
+        <div className="text-center">
+          <Sparkles className="h-10 w-10 mx-auto text-primary" />
+          <h2 className="mt-4 text-3xl md:text-4xl font-black uppercase">
+            Garanta sua <span className="text-primary">condição especial</span>
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Deixe seus dados e receba o link com o desconto exclusivo da Copa.
+          </p>
+        </div>
+
+        {submitted ? (
+          <div className="mt-8 rounded-xl border border-primary/40 bg-primary/5 p-6 text-center">
+            <CheckCircle2 className="h-10 w-10 mx-auto text-primary" />
+            <p className="mt-3 font-bold text-foreground">Recebemos seus dados!</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Em instantes você receberá o contato com a oferta.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="mt-8 grid gap-4" noValidate>
+            <label className="block">
+              <span className="text-sm font-semibold text-foreground">Nome</span>
+              <div className="relative mt-1">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  maxLength={100}
+                  required
+                  placeholder="Seu nome completo"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-3 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-foreground">E-mail</span>
+              <div className="relative mt-1">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  maxLength={255}
+                  required
+                  placeholder="voce@email.com"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-3 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-foreground">Telefone (WhatsApp)</span>
+              <div className="relative mt-1">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  required
+                  placeholder="(11) 99999-9999"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-3 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </label>
+
+            {error && (
+              <p className="text-sm font-semibold text-destructive">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-2 inline-flex items-center justify-center rounded-xl px-8 py-5 text-base font-black uppercase tracking-wide text-primary-foreground transition-transform hover:scale-[1.02] disabled:opacity-60"
+              style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-gold)" }}
+            >
+              {loading ? "Enviando..." : "Quero minha oferta"}
+            </button>
+
+            <p className="text-center text-xs text-muted-foreground">
+              Seus dados são usados apenas para enviar a oferta. Sem spam.
+            </p>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
