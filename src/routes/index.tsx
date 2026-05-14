@@ -4,6 +4,7 @@ import heroImg from "@/assets/projetor.png";
 import { Check, Flame, Package, ShieldCheck, Zap, Tv, Sparkles, Users, Film, ShoppingCart, RotateCcw, Truck, BadgeCheck, Monitor, Sun, Maximize, Volume2, Cable, Lightbulb, User, Mail, Phone, CheckCircle2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { buildCheckoutUrl, trackClick, type ProductId } from "@/lib/tracking";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -470,7 +471,7 @@ function LeadForm() {
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
@@ -493,17 +494,17 @@ function LeadForm() {
 
     setLoading(true);
     try {
-      const leads = JSON.parse(localStorage.getItem("arenabox_leads") || "[]");
-      leads.push({
+      const { error: insertError } = await supabase.from("leads").insert({
         name: trimmedName,
         email: trimmedEmail,
         phone: phoneDigits,
-        at: new Date().toISOString(),
+        source: "landing",
       });
-      localStorage.setItem("arenabox_leads", JSON.stringify(leads));
+      if (insertError) throw insertError;
       setSubmitted(true);
-    } catch {
-      setError("Não foi possível salvar. Tente novamente.");
+    } catch (err) {
+      console.error("[lead] insert failed", err);
+      setError("Não foi possível enviar. Tente novamente.");
     } finally {
       setLoading(false);
     }
