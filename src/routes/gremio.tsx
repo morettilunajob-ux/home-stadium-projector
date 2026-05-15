@@ -10,6 +10,9 @@ export const Route = createFileRoute("/gremio")({
       { title: "Grêmio — Leads & Visitantes" },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [
+      { rel: "canonical", href: "https://home-stadium-projector.lovable.app/gremio" },
+    ],
   }),
 });
 
