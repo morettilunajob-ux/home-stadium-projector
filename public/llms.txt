@@ -1,0 +1,11 @@
+# ArenaBox Pro
+
+> Mini projetor portátil que transforma qualquer parede em tela gigante de cinema e estádio. Promoção 12x ou R$297 à vista, estoque limitado.
+
+## Pages
+
+- [Home](/): Página de vendas do ArenaBox Pro com benefícios, prova social, bônus e checkout.
+
+## Optional
+
+- [Grêmio](/gremio): Painel administrativo interno (não indexado).

@@ -55,6 +55,30 @@ export const Route = createFileRoute("/")({
         content: "Descubra a tecnologia americana exclusiva que faz milhares de pessoas abandonarem TVs caras de R$ 5.000. Você está a um clique de uma experiência de luxo na sua sala.",
       },
     ],
+    links: [
+      { rel: "canonical", href: "https://home-stadium-projector.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "ArenaBox Pro",
+          description:
+            "Mini projetor portátil que transforma qualquer parede em tela gigante de cinema e estádio.",
+          image: "https://home-stadium-projector.lovable.app/assets/projetor.png",
+          brand: { "@type": "Brand", name: "ArenaBox" },
+          offers: {
+            "@type": "Offer",
+            price: "297",
+            priceCurrency: "BRL",
+            availability: "https://schema.org/InStock",
+            url: "https://home-stadium-projector.lovable.app/",
+          },
+        }),
+      },
+    ],
   }),
 });
 
