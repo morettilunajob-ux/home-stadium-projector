@@ -170,7 +170,7 @@ adm = adm.replace(
 
 
 // 6. Append LeadForm Component
-const leadFormCode = \`
+const leadFormCode = `
 function LeadForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -284,7 +284,7 @@ function LeadForm() {
     </section>
   );
 }
-\`;
+`;
 
 // Inject LeadForm before footer
 adm = adm.replace('<footer', '<LeadForm />\\n\\n      <footer');

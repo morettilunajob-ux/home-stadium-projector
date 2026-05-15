@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import heroImg from "@/assets/projetor.png";
 import {
   Check,
@@ -1422,9 +1422,9 @@ function LeadForm() {
   function formatPhone(v: string) {
     const digits = v.replace(/\D/g, "").slice(0, 11);
     if (digits.length <= 2) return digits;
-    if (digits.length <= 7) return (\) \;
-    if (digits.length <= 10) return (\) \-\;
-    return (\) \-\;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   }
 
   async function handleSubmit(e: React.FormEvent) {

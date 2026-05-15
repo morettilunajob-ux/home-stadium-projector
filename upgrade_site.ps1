@@ -109,7 +109,7 @@ $adm = $adm.Replace('Hoje você decide:<br />', 'Último Aviso: Você Está Pres
 $adm = $adm.Replace('tela gigante</span> ou continuar olhando pra TV pequena?', 'tela gigante</span> ou voltar para a velha TV minúscula e frustrante para sempre?')
 
 # 6. Append LeadForm Code
-$leadFormCode = @"
+$leadFormCode = @'
 function LeadForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -207,7 +207,7 @@ function LeadForm() {
     </section>
   );
 }
-"@
+'@
 
 $adm = $adm.Replace('<footer', "<LeadForm />`n`n      <footer")
 $adm = $adm + "`n`n" + $leadFormCode

@@ -40,24 +40,19 @@ function GremioPage() {
 
   useEffect(() => {
     getAllLeads()
-      .then((res) => setLeads(res.leads as Lead[]))
-      .catch((e) => setError(e?.message ?? "Erro ao carregar"));
+      .then((res: any) => setLeads(res.leads as Lead[]))
+      .catch((e: any) => setError(e?.message ?? "Erro ao carregar"));
     getAllVisitors()
-      .then((res) => setVisitors(res.visitors))
-      .catch(() => {});
+      .then((res: any) => setVisitors(res.visitors))
+      .catch(() => { });
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6 relative">
-      <div 
-        className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
-        style={{ 
-          backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Gremio_logo.svg/1200px-Gremio_logo.svg.png")', 
-          backgroundSize: '50%', 
-          backgroundPosition: 'center', 
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
-        }} 
+    <div className="min-h-screen bg-black text-white p-6 relative overflow-hidden">
+      <img
+        src="https://logodownload.org/wp-content/uploads/2017/02/gremio-logo-escudo-1.png"
+        alt="Gremio Logo"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] object-contain opacity-30 pointer-events-none z-0"
       />
       <div className="mx-auto max-w-7xl relative z-10">
         <header className="flex items-end justify-between mb-6 gap-4 flex-wrap">
@@ -73,8 +68,8 @@ function GremioPage() {
             <button
               onClick={() => {
                 setLeads(null); setVisitors(null); setError(null);
-                getAllLeads().then((res) => setLeads(res.leads as Lead[])).catch((e) => setError(e?.message ?? "Erro"));
-                getAllVisitors().then((res) => setVisitors(res.visitors)).catch(() => {});
+                getAllLeads().then((res: any) => setLeads(res.leads as Lead[])).catch((e: any) => setError(e?.message ?? "Erro"));
+                getAllVisitors().then((res: any) => setVisitors(res.visitors)).catch(() => { });
               }}
               className="rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-accent"
             >
@@ -165,7 +160,7 @@ function GremioPage() {
                 </tr>
               </thead>
               <tbody>
-                {leads.map((l) => (
+                {leads.map((l: Lead) => (
                   <tr key={l.id} className="border-t border-border align-top">
                     <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
                       {new Date(l.created_at).toLocaleString("pt-BR")}
@@ -209,7 +204,7 @@ function GremioPage() {
                       <details>
                         <summary className="cursor-pointer text-primary">ver</summary>
                         <pre className="mt-2 whitespace-pre-wrap break-all text-[10px] bg-muted/40 p-2 rounded">
-{JSON.stringify(l.browser_data, null, 2)}
+                          {JSON.stringify(l.browser_data, null, 2)}
                         </pre>
                       </details>
                     </td>
