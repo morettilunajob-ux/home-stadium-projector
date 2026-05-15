@@ -48,8 +48,18 @@ function GremioPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-background text-foreground p-6 relative">
+      <div 
+        className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+        style={{ 
+          backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Gremio_logo.svg/1200px-Gremio_logo.svg.png")', 
+          backgroundSize: '50%', 
+          backgroundPosition: 'center', 
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }} 
+      />
+      <div className="mx-auto max-w-7xl relative z-10">
         <header className="flex items-end justify-between mb-6 gap-4 flex-wrap">
           <div>
             <h1 className="text-3xl font-black uppercase">Painel de dados</h1>
